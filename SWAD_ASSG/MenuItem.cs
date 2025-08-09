@@ -10,7 +10,7 @@ namespace SWAD_ASSG
     {
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }
-        public float ItemPrice { get; set; }
+        public double ItemPrice { get; set; }
         public bool ItemAvailabilityStatus
         {
             get { return ItemQuantity > 0; }
