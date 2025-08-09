@@ -1,24 +1,26 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using SWAD_ASSG;
+using System.Reflection.Metadata.Ecma335;
 
-// create Chicken Rice Stall
+// Create Chicken Rice Stall
 FoodStall chickenRiceStall = new FoodStall("Chicken Rice Stall", "Serving authentic chicken rice and related dishes.", "9876-5432", "Food Court, Stall #5", "chicken_rice.jpg", StallStatus.Active);
-// add Menu Items
-chickenRiceStall.Menu.Add(new MenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5));
-chickenRiceStall.Menu.Add(new MenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3));
-chickenRiceStall.Menu.Add(new MenuItem("Shredded Chicken Noodle", "Noodles topped with tender shredded chicken.", 3.50f, 2));
-chickenRiceStall.Menu.Add(new MenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4));
-chickenRiceStall.Menu.Add(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
-chickenRiceStall.Menu.Add(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
 
+// Add Menu Items
+chickenRiceStall.AddMenuItem(new MenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5));
+chickenRiceStall.AddMenuItem(new MenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3));
+chickenRiceStall.AddMenuItem(new MenuItem("Shredded Chicken Noodle", "Noodles topped with tender shredded chicken.", 3.50f, 2));
+chickenRiceStall.AddMenuItem(new MenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4));
+chickenRiceStall.AddMenuItem(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
+chickenRiceStall.AddMenuItem(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
+
+// Display the welcome message and options
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
 Console.WriteLine("==============================================");
 Console.WriteLine("         Order-al-Ready Food Ordering         ");
 Console.WriteLine("==============================================");
 Console.WriteLine();
-String userType = "";
-String userID = "";
-while (true)
+string userType = "";
+while(true)
 {
     Console.WriteLine("== Login Or Register ==");
     Console.WriteLine("  1. Login as Student");
@@ -27,17 +29,17 @@ while (true)
     Console.WriteLine("  4. Register as a User");
     Console.WriteLine();
     Console.Write("Select an option (1-4): ");
-    String userInput = Console.ReadLine();
+    string? userInput = Console.ReadLine();
     Console.WriteLine();
     if (userInput == "1")
     {
         Console.WriteLine("Enter your Student ID");
         Console.Write("Student ID: ");
-        userID = Console.ReadLine();
+        string? studentID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
-        String password = Console.ReadLine();
+        string? password = Console.ReadLine();
         userType = "Student";
         break;
     }
@@ -45,11 +47,11 @@ while (true)
     {
         Console.WriteLine("Enter your Staff ID");
         Console.Write("Staff ID: ");
-        userID = Console.ReadLine();
+        string? staffID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
-        String password = Console.ReadLine();
+        string? password = Console.ReadLine();
         userType = "Staff";
         break;
     }
@@ -57,11 +59,11 @@ while (true)
     {
         Console.WriteLine("Enter your Admin ID");
         Console.Write("Admin ID: ");
-        userID = Console.ReadLine();
+        string? staffID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
-        String password = Console.ReadLine();
+        string? password = Console.ReadLine();
         userType = "Admin";
         break;
     }
@@ -70,21 +72,21 @@ while (true)
 
         Console.WriteLine("Enter your Name");
         Console.Write("Name: ");
-        String name = Console.ReadLine();
+        string? name = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Email");
         Console.Write("Email: ");
-        String email = Console.ReadLine();
+        string? email = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
-        String password = Console.ReadLine();
+        string? password = Console.ReadLine();
         Console.WriteLine();
         while (true)
         {
             Console.WriteLine("Reconfirm your password");
             Console.Write("Reconfirm Password: ");
-            String confirmPassword = Console.ReadLine();
+            string? confirmPassword = Console.ReadLine();
             if (password == confirmPassword)
             {
                 Console.WriteLine("Registration successful!");
@@ -103,6 +105,7 @@ while (true)
         Console.WriteLine("Please enter a valid input");
     }
 }
+
 Console.WriteLine();
 if(userType == "Student")
 {
@@ -156,7 +159,7 @@ void ManageMenuItems()
 {
     while (true)
     {
-        DisplayMenuItems();
+        chickenRiceStall.DisplayMenuItems();
         Console.WriteLine();
         Console.WriteLine("==== Manage Menu Items ====");
         Console.WriteLine("1. Edit Menu Item");
@@ -183,7 +186,7 @@ void ManageMenuItems()
             }
             else if (manageOption == "2")
             {
-                //AddNewMenuItem();
+                AddNewMenuItem();
             }
             else
             {
@@ -197,45 +200,31 @@ void ManageMenuItems()
     }
 }
 
-void DisplayMenuItems()
-{
-    Console.WriteLine($"===== {chickenRiceStall.StallName} Menu =====");
-    Console.WriteLine("{0,-25} {1,8}", "Item Name", "Price ($)");
-    foreach (var item in chickenRiceStall.Menu)
-    {
-        Console.WriteLine("{0,-25} {1,8:F2}", item.ItemName, item.ItemPrice);
-    }
-    Console.WriteLine();
-}
-
 void EditMenuItems()
 {
     bool continueUpdate = true;
     while (continueUpdate)
     {
         // Select an item to edit
-        Console.WriteLine("Select the item to edit by entering the option number: ");
-        for (int i = 0; i < chickenRiceStall.Menu.Count; i++)
-        {
-            Console.WriteLine($"{i + 1}. {chickenRiceStall.Menu[i].ItemName}");
-        }
+        Console.Write("Enter the Item ID to select the item: ");
         string? itemOption = Console.ReadLine();
-        Console.WriteLine();
-        
-        if (string.IsNullOrEmpty(itemOption) || Convert.ToInt16(itemOption) < 1 || Convert.ToInt16(itemOption) > chickenRiceStall.Menu.Count)
+        int itemId = Convert.ToInt32(itemOption);
+        if (itemId > chickenRiceStall.Menu.Count || string.IsNullOrEmpty(itemOption) || itemId <= 0)
         {
-            Console.WriteLine("Invalid option! Please choose a valid item number.");
+            Console.WriteLine("Invalid Item ID! Please enter a valid Item ID from the menu.");
             continue;
         }
-        int selectedItemIndex = Convert.ToInt32(itemOption);
-        MenuItem item = chickenRiceStall.Menu[selectedItemIndex - 1];
+        MenuItem? item = chickenRiceStall.GetMenuItemById(itemId);
+        if (item == null)
+        {
+            Console.WriteLine("Item not found with the provided Item ID. Please try again.");
+            continue;
+        }
+        Console.WriteLine();
+        
         // Display the selected item details
         Console.WriteLine("Editing item:");
-        Console.WriteLine("Name: " + item.ItemName);
-        Console.WriteLine("Description: " + item.ItemDescription);
-        Console.WriteLine("Quantity: " + item.ItemQuantity);
-        Console.WriteLine("Price: $" + item.ItemPrice.ToString("F2"));
-        Console.WriteLine(); // Blank line between items
+        item.DisplayMenuItemDetails();
 
         // Ask user if they want to update or delete the item
         Console.WriteLine("Would you like to update or delete this item?");
@@ -263,7 +252,7 @@ void EditMenuItems()
             }
             else if (editOption == "2")
             {
-                //DeleteMenuItem(item);
+                DeleteMenuItem(item);
             }
 
             Console.Write("Do you want to continue editing menu items? (yes/no): ");
@@ -282,6 +271,7 @@ void EditMenuItems()
             {
                 Console.WriteLine("Continuing to edit menu items...");
             }
+            Console.WriteLine();
         }
         catch (Exception ex)
         {
@@ -322,71 +312,118 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.Write("Enter new name for the item: ");
             string? newName = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newName))
+            if (!chickenRiceStall.validateFieldValue("name", newName, item))
             {
-                item.ItemName = newName;
-                Console.WriteLine($"Item name updated to: {item.ItemName}");
-            }
-            else
-            {
-                Console.WriteLine("Invalid name. Please try again.");
+                Console.WriteLine("Invalid name. Please try again. The name must be unique and not empty.");
                 break;
             }
+            chickenRiceStall.UpdateField(item, "name", newName);
         }
         else if (fieldChoice == "2")
         {
-            Console.Write("Enter new description for the item: ");
+            Console.WriteLine("Enter new description for the item: ");
             string? newDescription = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newDescription))
+            if (!chickenRiceStall.validateFieldValue("description", newDescription, item))
             {
-                item.ItemDescription = newDescription;
-                Console.WriteLine($"Item description updated to: {item.ItemDescription}");
-            }
-            else
-            {
-                Console.WriteLine("Invalid description. Please try again.");
+                Console.WriteLine("Invalid description. Please try again. The description cannot be empty.");
                 break;
             }
+            chickenRiceStall.UpdateField(item, "description", newDescription);
         }
         else if (fieldChoice == "3")
         {
             Console.Write("Enter new price for the item: $");
-            double priceInput = Convert.ToDouble(Console.ReadLine());
-            if (priceInput >= 0)
+            float priceInput = float.Parse(Console.ReadLine());
+            if (!chickenRiceStall.validateFieldValue("price", priceInput, item))
             {
-                item.ItemPrice = priceInput;
-                Console.WriteLine($"Item price updated to: ${item.ItemPrice:F2}");
-            }
-            else
-            {
-                Console.WriteLine("Invalid price. Please try again.");
+                Console.WriteLine("Invalid price. Please try again. The price cannot be negative.");
                 break;
             }
+            chickenRiceStall.UpdateField(item, "price", priceInput);
         }
         else if (fieldChoice == "4")
         {
             Console.Write("Enter new quantity for the item: ");
             int quantityInput = Convert.ToInt32(Console.ReadLine());
-            if (quantityInput >= 0)
+            if (!chickenRiceStall.validateFieldValue("quantity", quantityInput, item))
             {
-                item.ItemQuantity = quantityInput;
-                Console.WriteLine($"Item quantity updated to: {item.ItemQuantity}");
-            }
-            else
-            {
-                Console.WriteLine("Invalid quantity. Please try again.");
+                Console.WriteLine("Invalid quantity. Please try again. The quantity cannot be negative.");
                 break;
             }
+            chickenRiceStall.UpdateField(item, "quantity", quantityInput);
         }
         Console.WriteLine();
     }
     // Display the updated item details
     Console.WriteLine("\nFinal Updated Menu Item:");
-    Console.WriteLine($"Name: {item.ItemName}");
-    Console.WriteLine($"Description: {item.ItemDescription}");
-    Console.WriteLine($"Quantity: {item.ItemQuantity}");
-    Console.WriteLine($"Price: ${item.ItemPrice:F2}");
-    Console.WriteLine($"Availability: {item.GetAvailabilityStatus()}");
+    item.DisplayMenuItemDetails();
+    Console.WriteLine();
+}
+
+void DeleteMenuItem(MenuItem item)
+{
+    while (true)
+    {
+        // Confirm deletion
+        Console.WriteLine($"Are you sure you want to delete the item: {item.ItemName}? (yes/no)");
+        string? confirmDelete = Console.ReadLine()?.Trim().ToLower();
+        if (string.IsNullOrEmpty(confirmDelete) || (confirmDelete != "yes" && confirmDelete != "no"))
+        {
+            Console.WriteLine("Invalid input! Please enter 'yes' or 'no'.");
+        }
+        else if (confirmDelete == "yes")
+        {
+            chickenRiceStall.RemoveMenuItemById(item.ItemID);
+            Console.WriteLine($"Item '{item.ItemName}' has been deleted successfully.");
+            Console.WriteLine();
+            break;
+        }
+        else if (confirmDelete == "no")
+        {
+            Console.WriteLine("Deletion cancelled.");
+            break;
+        }
+    }
+}
+
+void AddNewMenuItem()
+{
+    Console.WriteLine("Adding a new menu item:");
+    Console.Write("Enter item name: ");
+    string? newItemName = Console.ReadLine();
+    if (!chickenRiceStall.validateFieldValue("name", newItemName))
+    {
+        Console.WriteLine("Invalid item name. Please try again. The name must be unique and not empty.");
+        return;
+    }
+
+    Console.Write("Enter item description: ");
+    string? newItemDescription = Console.ReadLine();
+    if (!chickenRiceStall.validateFieldValue("description", newItemDescription))
+    {
+        Console.WriteLine("Invalid item description. Please try again. The description cannot be empty.");
+        return;
+    }
+
+    Console.Write("Enter item price: $");
+    float newItemPrice = float.Parse(Console.ReadLine());
+    if (!chickenRiceStall.validateFieldValue("price", newItemPrice))
+    {
+        Console.WriteLine("Invalid item price. Please try again. The price cannot be negative.");
+        return;
+    }
+
+    Console.Write("Enter item quantity: ");
+    int newItemQuantity = Convert.ToInt32(Console.ReadLine());
+    if (!chickenRiceStall.validateFieldValue("quantity", newItemQuantity))
+    {
+        Console.WriteLine("Invalid item quantity. Please try again. The quantity cannot be negative.");
+        return;
+    }
+
+    MenuItem? newItem = new MenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
+    chickenRiceStall.AddMenuItem(newItem);
+    Console.WriteLine($"New item '{newItem.ItemName}' added successfully.");
     Console.WriteLine();
 }
 

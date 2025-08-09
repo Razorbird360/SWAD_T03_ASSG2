@@ -8,9 +8,10 @@ namespace SWAD_ASSG
 {
     internal class MenuItem
     {
+        public int ItemID { get; set; }
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }
-        public double ItemPrice { get; set; }
+        public float ItemPrice { get; set; }
         public bool ItemAvailabilityStatus
         {
             get { return ItemQuantity > 0; }
@@ -35,6 +36,16 @@ namespace SWAD_ASSG
             {
                 return "Out of Stock";
             }
+        }
+
+        public void DisplayMenuItemDetails()
+        {
+            Console.WriteLine($"Name: {ItemName}");
+            Console.WriteLine($"Description: {ItemDescription}");
+            Console.WriteLine($"Quantity: {ItemQuantity}");
+            Console.WriteLine($"Price: ${ItemPrice:F2}");
+            Console.WriteLine($"Availability: {GetAvailabilityStatus()}");
+            Console.WriteLine();
         }
     }
 }
