@@ -7,7 +7,8 @@ Console.WriteLine("         Order-al-Ready Food Ordering         ");
 Console.WriteLine("==============================================");
 Console.WriteLine();
 String userType = "";
-while(true)
+String userID = "";
+while (true)
 {
     Console.WriteLine("== Login Or Register ==");
     Console.WriteLine("  1. Login as Student");
@@ -22,7 +23,7 @@ while(true)
     {
         Console.WriteLine("Enter your Student ID");
         Console.Write("Student ID: ");
-        String studentID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -34,7 +35,7 @@ while(true)
     {
         Console.WriteLine("Enter your Staff ID");
         Console.Write("Staff ID: ");
-        String staffID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -46,7 +47,7 @@ while(true)
     {
         Console.WriteLine("Enter your Admin ID");
         Console.Write("Admin ID: ");
-        String staffID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -113,7 +114,7 @@ else if (userType == "Staff")
     Console.WriteLine("  1. Manage stall profile");
     Console.WriteLine("  2. View & track incoming orders");
     Console.WriteLine("  3. Manage Menu Items");
-    Console.WriteLine("  4. Handle feedback & report inappropriate reviews");
+    Console.WriteLine("  4. Response to feedback");
     Console.WriteLine("  5. Cancel orders & manage no-shows");
     Console.WriteLine("  6. Track sales performance");
 }
@@ -133,7 +134,6 @@ Console.WriteLine("==============================================");
 Console.WriteLine("  Press any key to continue...");
 Console.WriteLine("==============================================");
 String userOption = Console.ReadLine();
-Console.WriteLine(userOption);
 
 
 //Create Chicken Rice Stall
@@ -145,3 +145,63 @@ chickenRiceStall.Menu.Add(new MenuItem("Shredded Chicken Noodle", "Noodles toppe
 chickenRiceStall.Menu.Add(new MenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4));
 chickenRiceStall.Menu.Add(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
 chickenRiceStall.Menu.Add(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
+
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", 101, "Alice Tan", DateTime.Now.AddDays(-2)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", 102, "Ben Wong", DateTime.Now.AddDays(-1)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", 103, "Daniel Lim", DateTime.Now.AddDays(-5)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", 104, "Clara Lee", DateTime.Now.AddDays(-3)));
+//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
+//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
+
+if (userType == "Staff")
+{
+    if(userOption == "4")
+    {
+        while (true)
+        {
+            chickenRiceStall.displayListOfFeedback();
+            Console.Write("Please enter the feedback ID you want to reply to: ");
+            int feedbackID = Convert.ToInt32(Console.ReadLine());
+            Feedback feedbackToReply = chickenRiceStall.getFeedbackByID(feedbackID);
+            Console.WriteLine($"Responding to feedback {feedbackToReply.feedbackID}");
+            Console.WriteLine($"Customer: {feedbackToReply.customerName}");
+            Console.WriteLine($"Comment: {feedbackToReply.comment}");
+            Console.WriteLine();
+            Console.WriteLine("Choose your options: ");
+            Console.WriteLine("1. Reply to Feedback");
+            Console.WriteLine("2. Report as inappopriate feedback");
+            Console.Write("Select an option (1-2): ");
+            string option = Console.ReadLine();
+            if (option == "1")
+            {
+                Console.Write("Enter your response: ");
+                string response = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(response))
+                {
+                    Console.WriteLine("Response cannot be empty.");
+                    return;
+                }
+                feedbackToReply.updateResponse(response);
+                File.AppendAllText("feedbackLogs.txt", $"Responded to Feedback ID: {feedbackToReply.feedbackID}, Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
+                // send notification to user (TODO)
+                Console.WriteLine("Reply sent successfully!");
+            }
+            else if (option == "2")
+            {
+                Console.WriteLine("Feedback reported as inappropriate. Thank you for your report.");
+                // reporting to admin (TODO)
+            }
+            else
+            {
+                Console.WriteLine("Invalid option selected. Try again");
+                break;
+            }
+            Console.Write("Would you like to response to other feedbacks? Y/N: ");
+            string continueResponse = Console.ReadLine();
+            if (continueResponse.ToUpper() == "N")
+            {
+                break;
+            }
+        }
+    }
+}

@@ -21,6 +21,8 @@ namespace SWAD_ASSG
         public StallStatus Status { get; set; }
         public List<MenuItem> Menu { get; set; }
 
+        public List<Feedback> Feedbacks { get; set; }
+
         public FoodStall(string name, string desc, string contact, string location, string profilePicture, Enum status)
         {
             StallName = name;
@@ -30,6 +32,7 @@ namespace SWAD_ASSG
             ProfilePicture = profilePicture;
             Status = (StallStatus)status;
             Menu = new List<MenuItem>();
+            Feedbacks = new List<Feedback>();
         }
 
         public void DisplayMenu()
@@ -44,6 +47,52 @@ namespace SWAD_ASSG
             }
 
             Console.WriteLine(new string('-', 34));
+        }
+
+        public void displayListOfFeedback()
+        {
+            if (Feedbacks.Count == 0)
+            {
+                Console.WriteLine("No feedback available for this stall.");
+                return;
+            }
+            Console.WriteLine("=== Unreplied Feedback ===");
+            foreach (var feedback in Feedbacks)
+            {
+                if (!feedback.replied)
+                {
+                    Console.WriteLine($"ID: {feedback.feedbackID}");
+                    Console.WriteLine($"Customer: {feedback.customerName}");
+                    Console.WriteLine($"Comment: {feedback.comment}");
+                    Console.WriteLine($"Date: {feedback.timestamp}");
+                    Console.WriteLine();
+                }
+            }
+
+            Console.WriteLine("=== Replied Feedback ===");
+            foreach (var feedback in Feedbacks)
+            {
+                if (feedback.replied)
+                {
+                    Console.WriteLine($"ID: {feedback.feedbackID}");
+                    Console.WriteLine($"Customer: {feedback.customerName}");
+                    Console.WriteLine($"Comment: {feedback.comment}");
+                    Console.WriteLine($"Reply: {feedback.response}");
+                    Console.WriteLine($"Date: {feedback.timestamp}");
+                    Console.WriteLine();
+                }
+            }
+        }
+        public Feedback getFeedbackByID(int id)
+        {
+            foreach (var feedback in Feedbacks)
+            {
+                if (feedback.feedbackID == id)
+                {
+                    return feedback;
+                }
+            }
+            return null;
         }
     }
 }
