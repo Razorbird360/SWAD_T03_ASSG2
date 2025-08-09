@@ -1,4 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using SWAD_ASSG;
+
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
 Console.WriteLine("==============================================");
 Console.WriteLine("         Order-al-Ready Food Ordering         ");
@@ -93,6 +95,7 @@ while(true)
 Console.WriteLine();
 if(userType == "Student")
 {
+    // change the options accordingly these are fake example ones
     Console.WriteLine("Welcome Student!");
     Console.WriteLine();
     Console.WriteLine("  1. Register & Login with school credentials");
@@ -104,17 +107,19 @@ if(userType == "Student")
 }
 else if (userType == "Staff")
 {
+    // change the options accordingly these are fake example ones
     Console.WriteLine("Welcome Staff!");
     Console.WriteLine();
-    Console.WriteLine("  1. Manage stall profile & menu items");
+    Console.WriteLine("  1. Manage stall profile");
     Console.WriteLine("  2. View & track incoming orders");
-    Console.WriteLine("  3. Update availability & prep times");
+    Console.WriteLine("  3. Manage Menu Items");
     Console.WriteLine("  4. Handle feedback & report inappropriate reviews");
     Console.WriteLine("  5. Cancel orders & manage no-shows");
     Console.WriteLine("  6. Track sales performance");
 }
 else if (userType == "Admin")
 {
+    // change the options accordingly these are fake example ones
     Console.WriteLine("Welcome Admin!");
     Console.WriteLine();
     Console.WriteLine("  1. Manage student & staff accounts");
@@ -129,3 +134,14 @@ Console.WriteLine("  Press any key to continue...");
 Console.WriteLine("==============================================");
 String userOption = Console.ReadLine();
 Console.WriteLine(userOption);
+
+
+//Create Chicken Rice Stall
+FoodStall chickenRiceStall = new FoodStall("Chicken Rice Stall", "Serving authentic chicken rice and related dishes.", "9876-5432", "Food Court, Stall #5", "chicken_rice.jpg", StallStatus.Active);
+// Add Menu Items
+chickenRiceStall.Menu.Add(new MenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5));
+chickenRiceStall.Menu.Add(new MenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3));
+chickenRiceStall.Menu.Add(new MenuItem("Shredded Chicken Noodle", "Noodles topped with tender shredded chicken.", 3.50f, 2));
+chickenRiceStall.Menu.Add(new MenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4));
+chickenRiceStall.Menu.Add(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
+chickenRiceStall.Menu.Add(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
