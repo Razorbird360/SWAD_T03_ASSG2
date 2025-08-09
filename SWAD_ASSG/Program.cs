@@ -20,7 +20,8 @@ Console.WriteLine("         Order-al-Ready Food Ordering         ");
 Console.WriteLine("==============================================");
 Console.WriteLine();
 string userType = "";
-while(true)
+string userID = "";
+while (true)
 {
     Console.WriteLine("== Login Or Register ==");
     Console.WriteLine("  1. Login as Student");
@@ -35,7 +36,7 @@ while(true)
     {
         Console.WriteLine("Enter your Student ID");
         Console.Write("Student ID: ");
-        string? studentID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -47,7 +48,7 @@ while(true)
     {
         Console.WriteLine("Enter your Staff ID");
         Console.Write("Staff ID: ");
-        string? staffID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -59,7 +60,7 @@ while(true)
     {
         Console.WriteLine("Enter your Admin ID");
         Console.Write("Admin ID: ");
-        string? staffID = Console.ReadLine();
+        userID = Console.ReadLine();
         Console.WriteLine();
         Console.WriteLine("Enter your Password");
         Console.Write("Password: ");
@@ -155,11 +156,35 @@ Console.WriteLine("==============================================");
 string? userOption = Console.ReadLine();
 
 // Manage Menu Items
+void DisplayMenuItems(FoodStall stall)
+{
+    Console.WriteLine();
+    Console.WriteLine($"===== {stall.StallName} Menu =====");
+    Console.WriteLine("{0,-8} {1,-25} {2,8}", "Item ID", "Item Name", "Price ($)");
+    List<MenuItem> menuList = stall.GetMenuItems();
+    foreach (var item in menuList)
+    {
+        Console.WriteLine("{0,-8} {1,-25} {2,8:F2}", item.ItemID, item.ItemName, item.ItemPrice);
+    }
+    Console.WriteLine();
+}
+
+void DisplayMenuItemDetails(MenuItem item)
+{
+    string? availabilityStatus = item.GetAvailabilityStatus();
+    Console.WriteLine($"Item ID: {item.ItemID}");
+    Console.WriteLine($"Name: {item.ItemName}");
+    Console.WriteLine($"Description: {item.ItemDescription}");
+    Console.WriteLine($"Price: ${item.ItemPrice:F2}");
+    Console.WriteLine($"Quantity: {item.ItemQuantity}");
+    Console.WriteLine($"Availability: {availabilityStatus}");
+    Console.WriteLine();
+}
 void ManageMenuItems()
 {
     while (true)
     {
-        chickenRiceStall.DisplayMenuItems();
+        DisplayMenuItems(chickenRiceStall);
         Console.WriteLine();
         Console.WriteLine("==== Manage Menu Items ====");
         Console.WriteLine("1. Edit Menu Item");
@@ -224,7 +249,7 @@ void EditMenuItems()
         
         // Display the selected item details
         Console.WriteLine("Editing item:");
-        item.DisplayMenuItemDetails();
+        DisplayMenuItemDetails(item);
 
         // Ask user if they want to update or delete the item
         Console.WriteLine("Would you like to update or delete this item?");
@@ -318,6 +343,7 @@ void UpdateMenuItem(MenuItem item)
                 break;
             }
             chickenRiceStall.UpdateField(item, "name", newName);
+            Console.WriteLine($"Item name updated to: {newName}");
         }
         else if (fieldChoice == "2")
         {
@@ -329,6 +355,7 @@ void UpdateMenuItem(MenuItem item)
                 break;
             }
             chickenRiceStall.UpdateField(item, "description", newDescription);
+            Console.WriteLine($"Item description updated to: {newDescription}");
         }
         else if (fieldChoice == "3")
         {
@@ -340,6 +367,7 @@ void UpdateMenuItem(MenuItem item)
                 break;
             }
             chickenRiceStall.UpdateField(item, "price", priceInput);
+            Console.WriteLine($"Item price updated to: ${priceInput:F2}");
         }
         else if (fieldChoice == "4")
         {
@@ -351,12 +379,13 @@ void UpdateMenuItem(MenuItem item)
                 break;
             }
             chickenRiceStall.UpdateField(item, "quantity", quantityInput);
+            Console.WriteLine($"Item quantity updated to: {quantityInput}");
         }
         Console.WriteLine();
     }
     // Display the updated item details
     Console.WriteLine("\nFinal Updated Menu Item:");
-    item.DisplayMenuItemDetails();
+    DisplayMenuItemDetails(item);
     Console.WriteLine();
 }
 

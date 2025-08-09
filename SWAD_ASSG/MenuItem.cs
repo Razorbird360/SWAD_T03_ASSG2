@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace SWAD_ASSG
             get { return ItemQuantity > 0; }
         }
         public int ItemQuantity { get; set; }
+        private FoodStall FoodStall { get; set; }
 
         public MenuItem(string name, string desc, float price, int quantity)
         {
@@ -36,16 +38,6 @@ namespace SWAD_ASSG
             {
                 return "Out of Stock";
             }
-        }
-
-        public void DisplayMenuItemDetails()
-        {
-            Console.WriteLine($"Name: {ItemName}");
-            Console.WriteLine($"Description: {ItemDescription}");
-            Console.WriteLine($"Quantity: {ItemQuantity}");
-            Console.WriteLine($"Price: ${ItemPrice:F2}");
-            Console.WriteLine($"Availability: {GetAvailabilityStatus()}");
-            Console.WriteLine();
         }
     }
 }

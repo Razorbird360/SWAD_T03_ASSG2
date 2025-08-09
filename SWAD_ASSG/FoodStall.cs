@@ -38,16 +38,9 @@ namespace SWAD_ASSG
             Feedbacks = new List<Feedback>();
         }
 
-        public void DisplayMenuItems()
+        public List<MenuItem> GetMenuItems()
         {
-            Console.WriteLine();
-            Console.WriteLine($"===== {StallName} Menu =====");
-            Console.WriteLine("{0,-8} {1,-25} {2,8}", "Item ID", "Item Name", "Price ($)");
-            foreach (var item in Menu)
-            {
-                Console.WriteLine("{0,-8} {1,-25} {2,8:F2}", item.ItemID, item.ItemName, item.ItemPrice);
-            }
-            Console.WriteLine();
+            return Menu;
         }
 
         public MenuItem GetMenuItemById(int itemId)
