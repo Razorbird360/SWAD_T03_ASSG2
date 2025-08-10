@@ -195,8 +195,6 @@ void ManageMenuItems()
 {
     while (true)
     {
-        DisplayMenuItems(chickenRiceStall);
-        Console.WriteLine();
         Console.WriteLine("==== Manage Menu Items ====");
         Console.WriteLine("1. Edit Menu Item");
         Console.WriteLine("2. Add New Menu Item");
@@ -228,6 +226,8 @@ void ManageMenuItems()
             {
                 Console.WriteLine("Invalid option! Please try again.");
             }
+            Console.WriteLine("Final Menu Items:");
+            DisplayMenuItems(chickenRiceStall);
         }
         catch (Exception ex)
         {
@@ -241,11 +241,13 @@ void EditMenuItems()
     bool continueUpdate = true;
     while (continueUpdate)
     {
+        DisplayMenuItems(chickenRiceStall);
+        Console.WriteLine();
         // Select an item to edit
         Console.Write("Enter the Item ID to select the item: ");
         string? itemOption = Console.ReadLine();
         int itemId = Convert.ToInt32(itemOption);
-        if (itemId > chickenRiceStall.Menu.Count || string.IsNullOrEmpty(itemOption) || itemId <= 0)
+        if (string.IsNullOrEmpty(itemOption) || itemId <= 0)
         {
             Console.WriteLine("Invalid Item ID! Please enter a valid Item ID from the menu.");
             continue;
