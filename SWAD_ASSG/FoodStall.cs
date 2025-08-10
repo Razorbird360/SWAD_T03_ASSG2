@@ -151,39 +151,20 @@ namespace SWAD_ASSG
             return true;
         }
 
-        public void displayListOfFeedback()
+        public (List<Feedback> unreplied, List<Feedback> replied) getListOfFeedback()
         {
-            if (Feedbacks.Count == 0)
-            {
-                Console.WriteLine("No feedback available for this stall.");
-                return;
-            }
-            Console.WriteLine("=== Unreplied Feedback ===");
-            foreach (var feedback in Feedbacks)
-            {
-                if (!feedback.replied)
-                {
-                    Console.WriteLine($"ID: {feedback.feedbackID}");
-                    Console.WriteLine($"Customer: {feedback.customerName}");
-                    Console.WriteLine($"Comment: {feedback.comment}");
-                    Console.WriteLine($"Date: {feedback.timestamp}");
-                    Console.WriteLine();
-                }
-            }
+            var unreplied = new List<Feedback>();
+            var replied = new List<Feedback>();
 
-            Console.WriteLine("=== Replied Feedback ===");
             foreach (var feedback in Feedbacks)
             {
                 if (feedback.replied)
-                {
-                    Console.WriteLine($"ID: {feedback.feedbackID}");
-                    Console.WriteLine($"Customer: {feedback.customerName}");
-                    Console.WriteLine($"Comment: {feedback.comment}");
-                    Console.WriteLine($"Reply: {feedback.response}");
-                    Console.WriteLine($"Date: {feedback.timestamp}");
-                    Console.WriteLine();
-                }
+                    replied.Add(feedback);
+                else
+                    unreplied.Add(feedback);
             }
+
+            return (unreplied, replied);
         }
         public Feedback getFeedbackByID(int id)
         {

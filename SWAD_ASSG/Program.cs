@@ -13,6 +13,14 @@ chickenRiceStall.AddMenuItem(new MenuItem("Chicken Drumstick Rice", "Tender chic
 chickenRiceStall.AddMenuItem(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
 chickenRiceStall.AddMenuItem(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
 
+// Add Feedbacks
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", 101, "Alice Tan", DateTime.Now.AddDays(-2)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", 102, "Ben Wong", DateTime.Now.AddDays(-1)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", 103, "Daniel Lim", DateTime.Now.AddDays(-5)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", 104, "Clara Lee", DateTime.Now.AddDays(-3)));
+//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
+//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
+
 // Display the welcome message and options
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
 Console.WriteLine("==============================================");
@@ -135,6 +143,9 @@ else if (userType == "Staff")
     if (option == "3")
     {
         ManageMenuItems();
+    }else if(option == "4")
+    {
+        RespondToFeedback();
     }
     Console.WriteLine();
 }
@@ -457,45 +468,95 @@ void AddNewMenuItem()
 }
 
 
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", 101, "Alice Tan", DateTime.Now.AddDays(-2)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", 102, "Ben Wong", DateTime.Now.AddDays(-1)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", 103, "Daniel Lim", DateTime.Now.AddDays(-5)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", 104, "Clara Lee", DateTime.Now.AddDays(-3)));
-//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
-//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
-
-if (userType == "Staff")
+void RespondToFeedback()
 {
-    if(userOption == "4")
+    while (true)
     {
-        while (true)
+        var (unreplied, replied) = chickenRiceStall.getListOfFeedback();
+        // Unreplied Feedback Section
+        Console.WriteLine("=== Unreplied Feedback ===");
+        if (unreplied.Count == 0)
         {
-            chickenRiceStall.displayListOfFeedback();
+            Console.WriteLine("No feedback available to respond to.");
+        }
+        else
+        {
+            foreach (var f in unreplied)
+            {
+                Console.WriteLine($"ID: {f.feedbackID}");
+                Console.WriteLine($"Customer: {f.customerName}");
+                Console.WriteLine($"Comment: {f.comment}");
+                Console.WriteLine($"Date: {f.timestamp}");
+                Console.WriteLine();
+            }
+        }
+
+        // Replied Feedback Section 
+        Console.WriteLine("=== Replied Feedback ===");
+        if (replied.Count == 0)
+        {
+            Console.WriteLine("No replied feedback yet.");
+        }
+        else
+        {
+            foreach (var f in replied)
+            {
+                Console.WriteLine($"ID: {f.feedbackID}");
+                Console.WriteLine($"Customer: {f.customerName}");
+                Console.WriteLine($"Comment: {f.comment}");
+                Console.WriteLine($"Reply: {f.response}");
+                Console.WriteLine($"Date: {f.timestamp}");
+                Console.WriteLine();
+            }
+        }
+
+        // If no feedback at all, exit
+        if (replied.Count == 0 && unreplied.Count == 0)
+        {
+            Console.WriteLine("No feedbacks to respond to, returning you back to homepage");
+            break;
+        }
+
+        // Only allow reply if unreplied feedback exists
+        if (unreplied.Count > 0)
+        {
             Console.Write("Please enter the feedback ID you want to reply to: ");
             int feedbackID = Convert.ToInt32(Console.ReadLine());
+
             Feedback feedbackToReply = chickenRiceStall.getFeedbackByID(feedbackID);
+            if (feedbackToReply == null || feedbackToReply.replied)
+            {
+                Console.WriteLine("Invalid or already replied feedback ID.");
+                continue;
+            }
+
             Console.WriteLine($"Responding to feedback {feedbackToReply.feedbackID}");
             Console.WriteLine($"Customer: {feedbackToReply.customerName}");
             Console.WriteLine($"Comment: {feedbackToReply.comment}");
             Console.WriteLine();
             Console.WriteLine("Choose your options: ");
             Console.WriteLine("1. Reply to Feedback");
-            Console.WriteLine("2. Report as inappopriate feedback");
+            Console.WriteLine("2. Report as inappropriate feedback");
             Console.Write("Select an option (1-2): ");
             string option = Console.ReadLine();
+
             if (option == "1")
             {
                 Console.Write("Enter your response: ");
                 string response = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(response))
                 {
-                    Console.WriteLine("Response cannot be empty.");
-                    return;
+                    Console.WriteLine("ERROR: Response cannot be empty.");
+                    Console.WriteLine();
+                    continue;
                 }
                 feedbackToReply.updateResponse(response);
-                File.AppendAllText("feedbackLogs.txt", $"Responded to Feedback ID: {feedbackToReply.feedbackID}, Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
-                // send notification to user (TODO)
-                Console.WriteLine("Reply sent successfully!");
+                // Log the response to a file (Mimicking store to database
+                File.AppendAllText("feedbackLogs.txt",
+                    $"Responded to Feedback ID: {feedbackToReply.feedbackID}, " +
+                    $"Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
+                Console.WriteLine("Changes saved to logs");
+                Console.WriteLine("Reply sent to user successfully!");
             }
             else if (option == "2")
             {
@@ -505,14 +566,17 @@ if (userType == "Staff")
             else
             {
                 Console.WriteLine("Invalid option selected. Try again");
-                break;
-            }
-            Console.Write("Would you like to response to other feedbacks? Y/N: ");
-            string continueResponse = Console.ReadLine();
-            if (continueResponse.ToUpper() == "N")
-            {
-                break;
+                continue;
             }
         }
+
+        Console.Write("Would you like to respond to other feedbacks? Y/N: ");
+        string continueResponse = Console.ReadLine();
+        if (continueResponse.ToUpper() == "N")
+        {
+            break;
+        }
+        Console.WriteLine();
     }
 }
+
