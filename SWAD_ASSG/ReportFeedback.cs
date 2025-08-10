@@ -10,11 +10,11 @@ namespace SWAD_ASSG
     {
         public string Subject { get; set; }
         public string Reason { get; set; }
-        public int ReportedByUserID { get; set; }
+        public string ReportedByUserID { get; set; }
         public DateTime ReportedAt { get; set; }
         public Feedback feedback { get; set; }
 
-        public ReportFeedback(string subject, string reason, int reportedByUserID, Feedback feedback)
+        public ReportFeedback(string subject, string reason, string reportedByUserID, Feedback feedback)
         {
             Subject = subject;
             Reason = reason;
