@@ -8,7 +8,7 @@ namespace SWAD_ASSG
 {
     class Feedback
     {
-        public int feedbackID { get; set; }
+        public string feedbackID { get; set; }
         public string customerName { get; set; }
         public DateTime timestamp { get; set; }
         public int stallID { get; set; }
@@ -18,7 +18,7 @@ namespace SWAD_ASSG
 
         public string response { get; set; }
 
-        public Feedback(int stallID, string title, string comment, int feedbackID, string customerName, DateTime timeStamp)
+        public Feedback(int stallID, string title, string comment, string feedbackID, string customerName, DateTime timeStamp)
         {
             this.stallID = stallID;
             this.title = title;

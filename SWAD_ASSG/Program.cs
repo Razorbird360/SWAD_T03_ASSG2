@@ -14,12 +14,25 @@ chickenRiceStall.AddMenuItem("Chicken Set", "Chicken rice set with soup and side
 chickenRiceStall.AddMenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10);
 
 // Add Feedbacks
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", 101, "Alice Tan", DateTime.Now.AddDays(-2)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", 102, "Ben Wong", DateTime.Now.AddDays(-1)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", 103, "Daniel Lim", DateTime.Now.AddDays(-5)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", 104, "Clara Lee", DateTime.Now.AddDays(-3)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", "101", "Alice Tan", DateTime.Now.AddDays(-2)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", "102", "Ben Wong", DateTime.Now.AddDays(-1)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", "103", "Daniel Lim", DateTime.Now.AddDays(-5)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", "104", "Clara Lee", DateTime.Now.AddDays(-3)));
 //chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
 //chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
+
+// Add admin of the system (MOCK)
+Administrator admin = new Administrator(
+    contactDetails: "9123 4567",
+    permissionLevel: "SuperAdmin",
+    department: "IT",
+    userID: "101",
+    name: "Alice Tan",
+    email: "test@gmail.com",
+    password: "123"
+);
+
+
 
 // Display the welcome message and options
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
@@ -520,7 +533,7 @@ void RespondToFeedback()
         if (unreplied.Count > 0)
         {
             Console.Write("Please enter the feedback ID you want to reply to: ");
-            int feedbackID = Convert.ToInt32(Console.ReadLine());
+            string feedbackID = Console.ReadLine();
 
             Feedback feedbackToReply = chickenRiceStall.getFeedbackByID(feedbackID);
             if (feedbackToReply == null || feedbackToReply.replied)
@@ -559,8 +572,7 @@ void RespondToFeedback()
             }
             else if (option == "2")
             {
-                Console.WriteLine("Feedback reported as inappropriate. Thank you for your report.");
-                // reporting to admin (TODO)
+                ReportInappopriateFeedback(feedbackToReply);
             }
             else
             {
@@ -579,3 +591,28 @@ void RespondToFeedback()
     }
 }
 
+void ReportInappopriateFeedback(Feedback feedback)
+{
+    while (true)
+    {
+        Console.WriteLine("Please enter the subject of your report");
+        string? subject = Console.ReadLine();
+
+        Console.WriteLine("Please enter the reason for your report");
+        string? reason = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(reason))
+        {
+            Console.WriteLine("Subject and reason cannot be empty. Please try again.\n");
+            continue;
+        }
+        // Log the report to a file (Mimicking store to database)
+        File.AppendAllText("reportFeedbackLogs.txt",
+            $"Report Subject: {subject}, Reason: {reason}, Time of report: {DateTime.Now}, Staff: {userID} \n");
+
+        admin.ReportFeedback(subject, reason, feedback, userID);
+
+        Console.WriteLine("Your report has been submitted successfully. Thank you for your feedback.");
+        break;
+    }
+}

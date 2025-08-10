@@ -150,7 +150,7 @@ namespace SWAD_ASSG
 
             return (unreplied, replied);
         }
-        public Feedback getFeedbackByID(int id)
+        public Feedback getFeedbackByID(string id)
         {
             foreach (var feedback in Feedbacks)
             {
