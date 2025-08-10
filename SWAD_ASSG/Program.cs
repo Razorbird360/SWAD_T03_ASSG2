@@ -6,12 +6,12 @@ using System.Reflection.Metadata.Ecma335;
 FoodStall chickenRiceStall = new FoodStall("Chicken Rice Stall", "Serving authentic chicken rice and related dishes.", "9876-5432", "Food Court, Stall #5", "chicken_rice.jpg", StallStatus.Active);
 
 // Add Menu Items
-chickenRiceStall.AddMenuItem(new MenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5));
-chickenRiceStall.AddMenuItem(new MenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3));
-chickenRiceStall.AddMenuItem(new MenuItem("Shredded Chicken Noodle", "Noodles topped with tender shredded chicken.", 3.50f, 2));
-chickenRiceStall.AddMenuItem(new MenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4));
-chickenRiceStall.AddMenuItem(new MenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0));
-chickenRiceStall.AddMenuItem(new MenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10));
+chickenRiceStall.AddMenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5);
+chickenRiceStall.AddMenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3);
+chickenRiceStall.AddMenuItem("Shredded Chicken Noodle", "Noodles topped with tender shredded chicken.", 3.50f, 2);
+chickenRiceStall.AddMenuItem("Chicken Drumstick Rice", "Tender chicken drumstick served with fragrant rice.", 6.50f, 4);
+chickenRiceStall.AddMenuItem("Chicken Set", "Chicken rice set with soup and side dishes.", 4.00f, 0);
+chickenRiceStall.AddMenuItem("Braised Egg", "Soy sauce braised egg, a perfect side.", 1.00f, 10);
 
 // Display the welcome message and options
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
@@ -450,8 +450,7 @@ void AddNewMenuItem()
         return;
     }
 
-    MenuItem? newItem = new MenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
-    chickenRiceStall.AddMenuItem(newItem);
+    MenuItem newItem = chickenRiceStall.AddMenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
     Console.WriteLine($"New item '{newItem.ItemName}' added successfully.");
     Console.WriteLine();
 }

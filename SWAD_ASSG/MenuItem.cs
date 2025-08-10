@@ -13,19 +13,45 @@ namespace SWAD_ASSG
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }
         public float ItemPrice { get; set; }
+        public int ItemQuantity { get; set; }
         public bool ItemAvailabilityStatus
         {
             get { return ItemQuantity > 0; }
         }
-        public int ItemQuantity { get; set; }
-        private FoodStall FoodStall { get; set; }
+        public FoodStall FoodStall { get; set; }
 
-        public MenuItem(string name, string desc, float price, int quantity)
+        internal MenuItem(string name, string desc, float price, int quantity, FoodStall foodStall)
         {
             ItemName = name;
             ItemDescription = desc;
             ItemPrice = price;
             ItemQuantity = quantity;
+            FoodStall = foodStall;
+        }
+
+        public void clearFoodStallReference()
+        {
+            FoodStall = null;
+        }
+
+        public void updateField(string fieldName, object newValue)
+        {
+            if (fieldName.ToLower() == "name")
+            {
+                ItemName = Convert.ToString(newValue);
+            }
+            else if (fieldName.ToLower() == "description")
+            {
+                ItemDescription = Convert.ToString(newValue);
+            }
+            else if (fieldName.ToLower() == "price")
+            {
+                ItemPrice = float.Parse(newValue.ToString());
+            }
+            else if (fieldName.ToLower() == "quantity")
+            {
+                ItemQuantity = Convert.ToInt32(newValue);
+            }
         }
 
         public string GetAvailabilityStatus()

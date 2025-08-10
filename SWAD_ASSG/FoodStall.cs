@@ -54,35 +54,18 @@ namespace SWAD_ASSG
             }
             return null;
         }
-        public void AddMenuItem(MenuItem newItem)
+        public MenuItem AddMenuItem(string name, string desc, float price, int quantity)
         {
-            if (newItem != null)
+            var newItem = new MenuItem(name, desc, price, quantity, this)
             {
-                if (newItem.ItemID == 0)
-                {
-                    newItem.ItemID = nextItemId++;
-                }
-                Menu.Add(newItem);
-            }
+                ItemID = nextItemId++
+            };
+            Menu.Add(newItem);
+            return newItem;
         }
-        public void UpdateField(MenuItem item, string field, object newValue)
+        public void UpdateField(MenuItem item, string fieldName, object newValue)
         {
-            if (field.ToLower() == "name")
-            {
-                item.ItemName = Convert.ToString(newValue);
-            }
-            else if (field.ToLower() == "description")
-            {
-                item.ItemDescription = Convert.ToString(newValue);
-            }
-            else if (field.ToLower() == "price")
-            {
-                item.ItemPrice = float.Parse(newValue.ToString());
-            }
-            else if (field.ToLower() == "quantity")
-            {
-                item.ItemQuantity = Convert.ToInt32(newValue);
-            }
+            item.updateField(fieldName, newValue);
         }
         public void RemoveMenuItemById(int itemId)
         {
@@ -90,6 +73,7 @@ namespace SWAD_ASSG
             if (item != null)
             {
                 Menu.Remove(item);
+                item.clearFoodStallReference();
             }
         }
         public bool validateFieldValue(string field, object value, MenuItem currentItem = null)
