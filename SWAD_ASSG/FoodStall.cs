@@ -82,64 +82,6 @@ namespace SWAD_ASSG
                 item.clearFoodStallReference();
             }
         }
-        public bool validateFieldValue(string field, object value, MenuItem currentItem = null)
-        {
-            if (field.ToLower() == "name")
-            {
-                string name = Convert.ToString(value).Trim().ToLower();
-                foreach (var item in Menu)
-                {
-                    if (item.ItemName.Trim().ToLower() == name)
-                    {
-                        if (currentItem == null || item.ItemID != currentItem.ItemID || string.IsNullOrEmpty(name))
-                        {
-                            return false; // Name already exists and is not the current item
-                        }
-                        else
-                        {
-                            return true; // Name exists but is the current item, so it's valid
-                        }
-                    }
-                }
-            }
-            if (field.ToLower() == "description")
-            {
-                string description = Convert.ToString(value).Trim();
-                if (string.IsNullOrEmpty(description))
-                {
-                    return false; // Description cannot be empty
-                }
-            }
-            if (field.ToLower() == "price")
-            {
-                if (float.TryParse(value.ToString(), out float price))
-                {
-                    if (price < 0)
-                    {
-                        return false; // Price cannot be negative
-                    }
-                }
-                else
-                {
-                    return false; // Invalid price format
-                }
-            }
-            if (field.ToLower() == "quantity")
-            {
-                if (int.TryParse(value.ToString(), out int quantity))
-                {
-                    if (quantity < 0)
-                    {
-                        return false; // Quantity cannot be negative
-                    }
-                }
-                else
-                {
-                    return false; // Invalid quantity format
-                }
-            }
-            return true;
-        }
 
         public (List<Feedback> unreplied, List<Feedback> replied) getListOfFeedback()
         {

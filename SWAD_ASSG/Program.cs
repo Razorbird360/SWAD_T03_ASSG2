@@ -447,7 +447,7 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.Write("Enter new name for the item: ");
             string? newName = Console.ReadLine();
-            if (!chickenRiceStall.validateFieldValue("name", newName, item))
+            if (!validateFieldValue("name", newName, item))
             {
                 Console.WriteLine("Invalid name. Please try again. The name must be unique and not empty.");
                 break;
@@ -459,7 +459,7 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.WriteLine("Enter new description for the item: ");
             string? newDescription = Console.ReadLine();
-            if (!chickenRiceStall.validateFieldValue("description", newDescription, item))
+            if (!validateFieldValue("description", newDescription, item))
             {
                 Console.WriteLine("Invalid description. Please try again. The description cannot be empty.");
                 break;
@@ -471,7 +471,7 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.Write("Enter new price for the item: $");
             float priceInput = float.Parse(Console.ReadLine());
-            if (!chickenRiceStall.validateFieldValue("price", priceInput, item))
+            if (!validateFieldValue("price", priceInput, item))
             {
                 Console.WriteLine("Invalid price. Please try again. The price cannot be negative.");
                 break;
@@ -483,7 +483,7 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.Write("Enter new quantity for the item: ");
             int quantityInput = Convert.ToInt32(Console.ReadLine());
-            if (!chickenRiceStall.validateFieldValue("quantity", quantityInput, item))
+            if (!validateFieldValue("quantity", quantityInput, item))
             {
                 Console.WriteLine("Invalid quantity. Please try again. The quantity cannot be negative.");
                 break;
@@ -532,7 +532,7 @@ void AddNewMenuItem()
     Console.WriteLine("Adding a new menu item:");
     Console.Write("Enter item name: ");
     string? newItemName = Console.ReadLine();
-    if (!chickenRiceStall.validateFieldValue("name", newItemName))
+    if (!validateFieldValue("name", newItemName))
     {
         Console.WriteLine("Invalid item name. Please try again. The name must be unique and not empty.");
         return;
@@ -540,7 +540,7 @@ void AddNewMenuItem()
 
     Console.Write("Enter item description: ");
     string? newItemDescription = Console.ReadLine();
-    if (!chickenRiceStall.validateFieldValue("description", newItemDescription))
+    if (!validateFieldValue("description", newItemDescription))
     {
         Console.WriteLine("Invalid item description. Please try again. The description cannot be empty.");
         return;
@@ -548,7 +548,7 @@ void AddNewMenuItem()
 
     Console.Write("Enter item price: $");
     float newItemPrice = float.Parse(Console.ReadLine());
-    if (!chickenRiceStall.validateFieldValue("price", newItemPrice))
+    if (!validateFieldValue("price", newItemPrice))
     {
         Console.WriteLine("Invalid item price. Please try again. The price cannot be negative.");
         return;
@@ -556,7 +556,7 @@ void AddNewMenuItem()
 
     Console.Write("Enter item quantity: ");
     int newItemQuantity = Convert.ToInt32(Console.ReadLine());
-    if (!chickenRiceStall.validateFieldValue("quantity", newItemQuantity))
+    if (!validateFieldValue("quantity", newItemQuantity))
     {
         Console.WriteLine("Invalid item quantity. Please try again. The quantity cannot be negative.");
         return;
@@ -576,6 +576,65 @@ void LogMenuItemChange(string action, MenuItem item)
         $"Description: {item.ItemDescription}, Price: {item.ItemPrice}, \n" +
         $"Quantity: {item.ItemQuantity}, Availability: {item.GetAvailabilityStatus()}, \n" +
         $"Time of change: {DateTime.Now} \n");
+}
+
+bool validateFieldValue(string field, object value, MenuItem currentItem = null)
+{
+    if (field.ToLower() == "name")
+    {
+        string name = Convert.ToString(value).Trim().ToLower();
+        foreach (var item in chickenRiceStall.Menu)
+        {
+            if (item.ItemName.Trim().ToLower() == name)
+            {
+                if (currentItem == null || item.ItemID != currentItem.ItemID || string.IsNullOrEmpty(name))
+                {
+                    return false; // Name already exists and is not the current item
+                }
+                else
+                {
+                    return true; // Name exists but is the current item, so it's valid
+                }
+            }
+        }
+    }
+    if (field.ToLower() == "description")
+    {
+        string description = Convert.ToString(value).Trim();
+        if (string.IsNullOrEmpty(description))
+        {
+            return false; // Description cannot be empty
+        }
+    }
+    if (field.ToLower() == "price")
+    {
+        if (float.TryParse(value.ToString(), out float price))
+        {
+            if (price < 0)
+            {
+                return false; // Price cannot be negative
+            }
+        }
+        else
+        {
+            return false; // Invalid price format
+        }
+    }
+    if (field.ToLower() == "quantity")
+    {
+        if (int.TryParse(value.ToString(), out int quantity))
+        {
+            if (quantity < 0)
+            {
+                return false; // Quantity cannot be negative
+            }
+        }
+        else
+        {
+            return false; // Invalid quantity format
+        }
+    }
+    return true;
 }
 
 
