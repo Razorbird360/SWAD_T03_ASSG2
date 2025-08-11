@@ -177,8 +177,9 @@ namespace SWAD_ASSG
 
         public List<Order> GetIncomingOrders()
         {
-            return Orders.Where(o => o.OrderStatus == OrderStatus.Pending).ToList();
+            return Orders.ToList();
         }
+
 
         public void AddStaffMember(FoodStallStaff staff)
         {
