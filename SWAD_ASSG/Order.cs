@@ -146,7 +146,34 @@ namespace SWAD_ASSG
 
             return sb.ToString();
         }
+        public void UpdateOrderStatus(OrderStatus newStatus, string? cancellationReason = null)
+        {
+            // Basic validation: don't allow setting to the same status
+            if (OrderStatus == newStatus)
+            {
+                throw new InvalidOperationException("Order is already in the specified status.");
+            }
+
+            // If cancelling, store cancellation reason if provided
+            if (newStatus == OrderStatus.Cancelled)
+            {
+                if (string.IsNullOrWhiteSpace(cancellationReason))
+                {
+                    throw new ArgumentException("Cancellation reason must be provided when cancelling an order.");
+                }
+                CancellationReason = cancellationReason.Trim();
+            }
+            else
+            {
+                // Clear cancellation reason if status moves away from Cancelled
+                CancellationReason = string.Empty;
+            }
+
+            // Update the order status
+            OrderStatus = newStatus;
+        }
 
 
     }
+
 }

@@ -34,19 +34,21 @@ var timeSlot = new TimeSlot(
 
 // Create Order 
 var order1 = new Order(1001, 501, chickenRiceStall, 7.50m, DateTime.Now, timeSlot.TimeSlotID, DateTime.Now.AddMinutes(30));
-
+var order2 = new Order(1002, 502, chickenRiceStall, 12.00m, DateTime.Now, timeSlot.TimeSlotID, DateTime.Now.AddMinutes(15));
 
 // Create Order items
-var orderItem1 = new OrderItem(1, order1, 1, 1); // 1 Hainanese Chicken Rice
-var orderItem2 = new OrderItem(2, order1, 2, 1); // 2 Roasted Chicken Rice
+var orderItem1 = new OrderItem(1, order1, chickenRiceStall.Menu[0], 1); // 1 Hainanese Chicken Rice
+var orderItem2 = new OrderItem(2, order1, chickenRiceStall.Menu[1], 1); // 2 Roasted Chicken Rice
+var orderItem3 = new OrderItem(3, order2, chickenRiceStall.Menu[2], 2); // 3 Shredded Chicken Noodle
+var orderItem4 = new OrderItem(4, order2, chickenRiceStall.Menu[3], 1); // 4 Chicken Drumstick Rice
 
 // Add order items to Order
 order1.AddOrderItem(orderItem1);
 order1.AddOrderItem(orderItem2);
+order2.AddOrderItem(orderItem3);
+order2.AddOrderItem(orderItem4);
 
-// Add Order to Food Stall
-chickenRiceStall.
-    AddOrder(order1);
+
 
 // QR Code
 var qrCode = new QRCode(
@@ -60,11 +62,26 @@ var qrCode = new QRCode(
     Order = order1
 };
 
+var qrCode2 = new QRCode(
+       qrCodeID: 2,
+          orderID: order2.OrderID,
+             generatedTime: DateTime.Now,
+                expiryTime: DateTime.Now.AddHours(2),
+                   collectionStatus: CollectionStatus.NotCollected
+                   )
+{
+    Order = order2
+};
+
 // Link QRCode and TimeSLot to Order
 order1.QRCode = qrCode;
 order1.TimeSlot = timeSlot;
+order2.QRCode = qrCode2;
+order2.TimeSlot = timeSlot;
 
-
+// Add Order to Food Stall
+chickenRiceStall.AddOrder(order1);
+chickenRiceStall.AddOrder(order2);
 
 Console.WriteLine(order1.ToString());
 
@@ -212,7 +229,15 @@ else if (userType == "Staff")
     Console.WriteLine("  5. Cancel orders & manage no-shows");
     Console.WriteLine("  6. Track sales performance");
     string? option = Console.ReadLine();
-    if (option == "3")
+    if (option == "1")
+    {
+
+    }
+    else if (option == "2")
+    {
+        ViewIncomingOrders();
+    }
+    else if (option == "3")
     {
         ManageMenuItems();
     }else if(option == "4")
@@ -691,3 +716,184 @@ void ReportInappopriateFeedback(Feedback feedback)
     }
 }
 
+void ViewIncomingOrders()
+{
+    FoodStall fs = staff.StallAffiliation;
+    List<Order> incomingOrders = fs.GetIncomingOrders();
+    DateTime oneDayAgo = DateTime.Now.AddDays(-1);
+    if (incomingOrders.Count == 0)
+    {
+        DisplayNoOrderMessage();
+        return;
+    } else
+    {
+        incomingOrders = incomingOrders.Where(o => o.PickupTime >= oneDayAgo).ToList();
+       
+        // Sort by PickupTime ascending
+        incomingOrders = incomingOrders.OrderBy(o => o.PickupTime).ToList();
+    }
+
+    while (true)
+    {
+        Console.WriteLine($"Incoming Orders for {fs.StallName}:");
+        ShowOrderSummaryList(incomingOrders);
+
+        Console.WriteLine("Would you like to view more details of an order? (y/n)");
+        string? viewDetailResponse = Console.ReadLine()?.Trim().ToLower();
+
+        if (viewDetailResponse == "y")
+        {
+            Console.WriteLine("Please enter the Order ID you want to view details for:");
+            string? orderIdInput = Console.ReadLine();
+
+            if (int.TryParse(orderIdInput, out int orderId))
+            {
+                Order? selectedOrder = incomingOrders.FirstOrDefault(o => o.OrderID == orderId);
+                if (selectedOrder != null)
+                {
+                    Console.WriteLine($"Details for Order ID: {selectedOrder.OrderID}");
+                    Console.WriteLine($"Student ID: {selectedOrder.StudentID}");
+                    Console.WriteLine($"Total Amount: {selectedOrder.TotalAmount:C}");
+                    Console.WriteLine($"Order Time: {selectedOrder.OrderTime}");
+                    Console.WriteLine($"Pickup Time: {selectedOrder.PickupTime}");
+                    Console.WriteLine($"Order Status: {selectedOrder.OrderStatus}");
+                    Console.WriteLine();
+                    Console.WriteLine("Items in this order:");
+                    foreach (var item in selectedOrder.Items)
+                    {
+                        Console.WriteLine($"- {item.MenuItem.ItemName} (Quantity: {item.Quantity})");
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Would you like to update the order status? (y/n)");
+                    string? updateStatusResponse = Console.ReadLine()?.Trim().ToLower();
+                    if (updateStatusResponse == "y")
+                    {
+                        InitiateUpdateOrderStatus(selectedOrder);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No order found with the provided Order ID.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Order ID format.");
+            }
+        }
+        Console.WriteLine();
+        Console.WriteLine("Would you like to continue viewing incoming orders? (y/n)");
+        string? continueResponse = Console.ReadLine()?.Trim().ToLower();
+        if (continueResponse != "y")
+        {
+            break;
+        }
+    }
+}
+
+void ShowOrderSummaryList(List<Order> incomingOrders)
+{
+
+
+    foreach (var order in incomingOrders)
+    {
+
+        //foreach (var item in order.Items)
+        //{
+        //    Console.WriteLine($"- {item.ItemName} (Quantity: {item.Quantity})");
+        //}
+        Console.WriteLine($"Order Number: {order.OrderID}");
+        Console.WriteLine($"Scheduled Pickup Time: {order.PickupTime}");
+        Console.WriteLine($"Order Status: {order.OrderStatus}");
+        Console.WriteLine();
+    }
+
+    Console.WriteLine("==============================================");
+}
+void DisplayNoOrderMessage()
+{
+    Console.WriteLine("No incoming orders at the moment.");
+}
+
+void InitiateUpdateOrderStatus(Order od)
+{
+    OrderStatus currentStatus = od.OrderStatus;
+    List<OrderStatus> availableStatuses = new List<OrderStatus>();
+
+    if (currentStatus == OrderStatus.Pending)
+    {
+        availableStatuses.Add(OrderStatus.Preparing);
+    }
+    else if (currentStatus == OrderStatus.Preparing)
+    {
+        availableStatuses.Add(OrderStatus.ReadyForPickup);
+        availableStatuses.Add(OrderStatus.Completed);  // assuming skipping allowed here
+    }
+    else if (currentStatus == OrderStatus.ReadyForPickup)
+    {
+        availableStatuses.Add(OrderStatus.Completed);
+    }
+    else if (currentStatus == OrderStatus.Completed || currentStatus == OrderStatus.Cancelled)
+    {
+        Console.WriteLine("Order is already completed or cancelled, no further updates allowed.");
+        return;
+    }
+
+    while (true)
+    {
+        Console.WriteLine($"Current Order Status: {currentStatus}");
+        Console.WriteLine("Available next status options:");
+        for (int i = 0; i < availableStatuses.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {availableStatuses[i]}");
+        }
+        Console.WriteLine("0. Cancel Update Order Status Process");
+
+        Console.Write("Select the new status by entering the corresponding number: ");
+        string? input = Console.ReadLine()?.Trim();
+
+        if (input == "0")
+        {
+            Console.Write("Are you sure you want to cancel the status update? (y/n): ");
+            string? cancelConfirm = Console.ReadLine()?.Trim().ToLower();
+            if (cancelConfirm == "y")
+            {
+                Console.WriteLine("Order status update cancelled.");
+                break;
+            }
+            else
+            {
+                continue; // back to options prompt
+            }
+        }
+
+        if (int.TryParse(input, out int choice) && choice > 0 && choice <= availableStatuses.Count)
+        {
+            OrderStatus selectedStatus = availableStatuses[choice - 1];
+            Console.Write($"Confirm update order status to {selectedStatus}? (y/n): ");
+            string? confirm = Console.ReadLine()?.Trim().ToLower();
+
+            if (confirm == "y")
+            {
+                od.UpdateOrderStatus(selectedStatus);
+                Console.WriteLine($"Order status updated to: {selectedStatus}");
+
+                File.AppendAllText("orderStatusLogs.txt",
+                    $"Order ID: {od.OrderID}, New Status: {selectedStatus}, Time of update: {DateTime.Now}, Staff: {staff.name} \n");
+
+                Console.WriteLine("Order status update completed.");
+                Console.WriteLine("==============================================");
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Status update not confirmed. Please select again.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid selection. Please try again.");
+        }
+    }
+}
