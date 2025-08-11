@@ -582,11 +582,15 @@ bool validateFieldValue(string field, object value, MenuItem currentItem = null)
     if (field.ToLower() == "name")
     {
         string name = Convert.ToString(value).Trim().ToLower();
+        if (string.IsNullOrEmpty(name))
+        {
+            return false; // Name cannot be empty
+        }
         foreach (var item in chickenRiceStall.Menu)
         {
             if (item.ItemName.Trim().ToLower() == name)
             {
-                if (currentItem == null || item.ItemID != currentItem.ItemID || string.IsNullOrEmpty(name))
+                if (currentItem == null || item.ItemID != currentItem.ItemID)
                 {
                     return false; // Name already exists and is not the current item
                 }
