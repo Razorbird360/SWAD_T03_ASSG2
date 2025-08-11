@@ -17,12 +17,14 @@ namespace SWAD_ASSG
 
         public OrderItem() { }
 
-        public OrderItem(int orderItemID, int orderID, int menuItemID, int quantity)
+        public OrderItem(int orderItemID, Order order, int menuItemID, int quantity)
         {
             OrderItemID = orderItemID;
-            OrderID = orderID;
+            Order = order ?? throw new ArgumentNullException(nameof(order));
+            OrderID = order.OrderID;
             MenuItemID = menuItemID;
             Quantity = quantity;
         }
+
     }
 }

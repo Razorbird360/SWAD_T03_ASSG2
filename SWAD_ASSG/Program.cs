@@ -4,7 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 
 // Create Chicken Rice Stall
 FoodStall chickenRiceStall = new FoodStall("Chicken Rice Stall", "Serving authentic chicken rice and related dishes.", "9876-5432", "Food Court, Stall #5", "chicken_rice.jpg", StallStatus.Active);
-
+Console.WriteLine(chickenRiceStall.StallID);
 // Add Menu Items
 chickenRiceStall.AddMenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5);
 chickenRiceStall.AddMenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3);
@@ -21,6 +21,52 @@ chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes a
 //chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
 //chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
 
+// Time Slot
+var timeSlot = new TimeSlot(
+    timeSlotID: 7,
+    stallID: chickenRiceStall.StallID,
+    startTime: DateTime.Today.AddHours(11),
+    endTime: DateTime.Today.AddHours(12),
+    isAvailable: true,
+    isExclusive: false,
+    maxOrders: 50
+);
+
+// Create Order 
+var order1 = new Order(1001, 501, chickenRiceStall, 7.50m, DateTime.Now, timeSlot.TimeSlotID, DateTime.Now.AddMinutes(30));
+
+
+// Create Order items
+var orderItem1 = new OrderItem(1, order1, 1, 1); // 1 Hainanese Chicken Rice
+var orderItem2 = new OrderItem(2, order1, 2, 1); // 2 Roasted Chicken Rice
+
+// Add order items to Order
+order1.AddOrderItem(orderItem1);
+order1.AddOrderItem(orderItem2);
+
+// Add Order to Food Stall
+chickenRiceStall.AddOrder(order1);
+
+// QR Code
+var qrCode = new QRCode(
+    qrCodeID: 1,
+    orderID: order1.OrderID,
+    generatedTime: DateTime.Now,
+    expiryTime: DateTime.Now.AddHours(2),
+    collectionStatus: CollectionStatus.NotCollected
+)
+{
+    Order = order1
+};
+
+// Link QRCode and TimeSLot to Order
+order1.QRCode = qrCode;
+order1.TimeSlot = timeSlot;
+
+
+
+Console.WriteLine(order1.ToString());
+
 // Add admin of the system (MOCK)
 Administrator admin = new Administrator(
     contactDetails: "9123 4567",
@@ -32,7 +78,19 @@ Administrator admin = new Administrator(
     password: "123"
 );
 
+// Add FoodStallStaff
+var staff = new FoodStallStaff(
+    userID: "99",
+    name: "John",
+    email: "john@example.com",
+    password: "pass123",
+    staffContact: "12345678",
+    dateOfEmployment: DateTime.Now.AddYears(-1),
+    emergencyContactNumber: "87654321",
+    stallAffiliation: chickenRiceStall
+);
 
+chickenRiceStall.AddStaffMember(staff);
 
 // Display the welcome message and options
 Console.WriteLine("Welcome to Order-al-Ready Food Ordering! ");
@@ -618,3 +676,4 @@ void ReportInappopriateFeedback(Feedback feedback)
         break;
     }
 }
+

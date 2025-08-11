@@ -27,6 +27,9 @@ namespace SWAD_ASSG
         // Association: One FoodStall has many Orders
         private List<Order> Orders = new List<Order>();
 
+        // Association: One FoodStall has many Staff
+        public List<FoodStallStaff> StaffMembers { get; private set; } = new List<FoodStallStaff>();
+
         public List<Feedback> Feedbacks { get; set; }
 
         public FoodStall(string name, string desc, string contact, string location, string profilePicture, Enum status)
@@ -175,6 +178,15 @@ namespace SWAD_ASSG
         public List<Order> GetIncomingOrders()
         {
             return Orders.Where(o => o.OrderStatus == OrderStatus.Pending).ToList();
+        }
+
+        public void AddStaffMember(FoodStallStaff staff)
+        {
+            if (staff != null && !StaffMembers.Contains(staff))
+            {
+                StaffMembers.Add(staff);
+                staff.StallAffiliation = this;  // maintain two-way link
+            }
         }
 
 
