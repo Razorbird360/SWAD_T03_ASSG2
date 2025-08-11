@@ -45,7 +45,8 @@ order1.AddOrderItem(orderItem1);
 order1.AddOrderItem(orderItem2);
 
 // Add Order to Food Stall
-chickenRiceStall.AddOrder(order1);
+chickenRiceStall.
+    AddOrder(order1);
 
 // QR Code
 var qrCode = new QRCode(
@@ -470,6 +471,7 @@ void UpdateMenuItem(MenuItem item)
     // Display the updated item details
     Console.WriteLine("\nFinal Updated Menu Item:");
     DisplayMenuItemDetails(item);
+    LogMenuItemChange("UPDATE", item);
     Console.WriteLine();
 }
 
@@ -489,6 +491,7 @@ void DeleteMenuItem(MenuItem item)
             chickenRiceStall.RemoveMenuItemById(item.ItemID);
             Console.WriteLine($"Item '{item.ItemName}' has been deleted successfully.");
             Console.WriteLine();
+            LogMenuItemChange("DELETE", item);
             break;
         }
         else if (confirmDelete == "no")
@@ -536,7 +539,18 @@ void AddNewMenuItem()
 
     MenuItem newItem = chickenRiceStall.AddMenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
     Console.WriteLine($"New item '{newItem.ItemName}' added successfully.");
+    LogMenuItemChange("ADD", newItem);
     Console.WriteLine();
+}
+
+void LogMenuItemChange(string action, MenuItem item)
+{
+    File.AppendAllText("menuItemLogs.txt",
+        $"Action: {action}, \n" +
+        $"Item ID: {item.ItemID}, Name: {item.ItemName}, \n" +
+        $"Description: {item.ItemDescription}, Price: {item.ItemPrice}, \n" +
+        $"Quantity: {item.ItemQuantity}, Availability: {item.GetAvailabilityStatus()}, \n" +
+        $"Time of change: {DateTime.Now} \n");
 }
 
 

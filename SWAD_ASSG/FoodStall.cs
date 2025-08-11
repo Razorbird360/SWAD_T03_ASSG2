@@ -91,7 +91,7 @@ namespace SWAD_ASSG
                 {
                     if (item.ItemName.Trim().ToLower() == name)
                     {
-                        if (currentItem == null || item.ItemID != currentItem.ItemID)
+                        if (currentItem == null || item.ItemID != currentItem.ItemID || string.IsNullOrEmpty(name))
                         {
                             return false; // Name already exists and is not the current item
                         }
