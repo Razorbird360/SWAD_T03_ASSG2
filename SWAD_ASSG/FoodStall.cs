@@ -24,6 +24,9 @@ namespace SWAD_ASSG
 
         private int nextItemId = 1;
 
+        // Association: One FoodStall has many Orders
+        private List<Order> Orders = new List<Order>();
+
         public List<Feedback> Feedbacks { get; set; }
 
         public FoodStall(string name, string desc, string contact, string location, string profilePicture, Enum status)
@@ -161,5 +164,19 @@ namespace SWAD_ASSG
             }
             return null;
         }
+        public void AddOrder(Order order)
+        {
+            if (order != null && order.FoodStall == this)
+            {
+                Orders.Add(order);
+            }
+        }
+
+        public List<Order> GetIncomingOrders()
+        {
+            return Orders.Where(o => o.OrderStatus == OrderStatus.Pending).ToList();
+        }
+
+
     }
 }
