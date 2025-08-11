@@ -18,8 +18,7 @@ chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken ric
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", "102", "Ben Wong", DateTime.Now.AddDays(-1)));
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", "103", "Daniel Lim", DateTime.Now.AddDays(-5)));
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", "104", "Clara Lee", DateTime.Now.AddDays(-3)));
-//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Friendly Staff", "Staff were polite and helpful!", 105, "Ethan Chua", DateTime.Now.AddDays(-7)));
-//chickenRiceStall.Feedbacks.Add(new Feedback(2, "Order Mix-up", "I received the wrong order twice.", 106, "Fiona Ng", DateTime.Now.AddDays(-4)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Staff", "I HATE YOUR STAFF", "105", "John Doe", DateTime.Now.AddDays(-4)));
 
 // Time Slot
 var timeSlot = new TimeSlot(
@@ -85,7 +84,7 @@ chickenRiceStall.AddOrder(order2);
 
 Console.WriteLine(order1.ToString());
 
-// Add admin of the system (MOCK)
+// Add admin of the system
 Administrator admin = new Administrator(
     contactDetails: "9123 4567",
     permissionLevel: "SuperAdmin",
@@ -583,7 +582,7 @@ void RespondToFeedback()
 {
     while (true)
     {
-        var (unreplied, replied) = chickenRiceStall.getListOfFeedback();
+        var (unreplied, replied, reported) = chickenRiceStall.getListOfFeedback();
         // Unreplied Feedback Section
         Console.WriteLine("=== Unreplied Feedback ===");
         if (unreplied.Count == 0)
@@ -607,6 +606,7 @@ void RespondToFeedback()
         if (replied.Count == 0)
         {
             Console.WriteLine("No replied feedback yet.");
+            Console.WriteLine();
         }
         else
         {
@@ -620,11 +620,29 @@ void RespondToFeedback()
                 Console.WriteLine();
             }
         }
-
+        
+        // Reported Feedback Section
+        Console.WriteLine("=== Reported Feedback ===");
+        if (reported.Count == 0)
+        {
+            Console.WriteLine("No reported feedback yet.");
+            Console.WriteLine();
+        }
+        else
+        {
+            foreach (var f in reported)
+            {
+                Console.WriteLine($"ID: {f.feedbackID}");
+                Console.WriteLine($"Customer: {f.customerName}");
+                Console.WriteLine($"Comment: {f.comment}");
+                Console.WriteLine($"Date: {f.timestamp}");
+                Console.WriteLine();
+            }
+        }
         // If no feedback at all, exit
         if (replied.Count == 0 && unreplied.Count == 0)
         {
-            Console.WriteLine("No feedbacks to respond to, returning you back to homepage");
+            Console.WriteLine("The food stall currently does not have any feedback. Check again later");
             break;
         }
 
@@ -657,7 +675,7 @@ void RespondToFeedback()
                 string response = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(response))
                 {
-                    Console.WriteLine("ERROR: Response cannot be empty.");
+                    Console.WriteLine("Response cannot be empty, please fill it up before sending");
                     Console.WriteLine();
                     continue;
                 }
@@ -666,8 +684,16 @@ void RespondToFeedback()
                 File.AppendAllText("feedbackLogs.txt",
                     $"Responded to Feedback ID: {feedbackToReply.feedbackID}, " +
                     $"Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
-                Console.WriteLine("Changes saved to logs");
+                Console.WriteLine();
                 Console.WriteLine("Reply sent to user successfully!");
+                Console.WriteLine();
+                Console.WriteLine("Here is the feedback you replied to: ");
+                Console.WriteLine($"ID: {feedbackToReply.feedbackID}");
+                Console.WriteLine($"Customer: {feedbackToReply.customerName}");
+                Console.WriteLine($"Comment: {feedbackToReply.comment}");
+                Console.WriteLine($"Reply: {feedbackToReply.response}");
+                Console.WriteLine($"Date: {feedbackToReply.timestamp}");
+                Console.WriteLine();
             }
             else if (option == "2")
             {
@@ -679,7 +705,6 @@ void RespondToFeedback()
                 continue;
             }
         }
-
         Console.Write("Would you like to respond to other feedbacks? Y/N: ");
         string continueResponse = Console.ReadLine();
         if (continueResponse.ToUpper() == "N")
@@ -702,7 +727,8 @@ void ReportInappopriateFeedback(Feedback feedback)
 
         if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(reason))
         {
-            Console.WriteLine("Subject and reason cannot be empty. Please try again.\n");
+            Console.WriteLine("Subject and reason cannot be empty. Please try again.");
+            Console.WriteLine();
             continue;
         }
         // Log the report to a file (Mimicking store to database)
@@ -710,7 +736,8 @@ void ReportInappopriateFeedback(Feedback feedback)
             $"Report Subject: {subject}, Reason: {reason}, Time of report: {DateTime.Now}, Staff: {userID} \n");
 
         admin.ReportFeedback(subject, reason, feedback, userID);
-
+        feedback.reported = true;
+        Console.WriteLine();
         Console.WriteLine("Your report has been submitted successfully. Thank you for your feedback.");
         break;
     }

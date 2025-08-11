@@ -16,6 +16,7 @@ namespace SWAD_ASSG
         public string comment { get; set; }
         public bool replied { get; set; }
 
+        public bool reported { get; set; } = false;
         public string response { get; set; }
 
         public Feedback(int stallID, string title, string comment, string feedbackID, string customerName, DateTime timeStamp)

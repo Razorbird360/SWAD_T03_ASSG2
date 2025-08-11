@@ -141,20 +141,23 @@ namespace SWAD_ASSG
             return true;
         }
 
-        public (List<Feedback> unreplied, List<Feedback> replied) getListOfFeedback()
+        public (List<Feedback> unreplied, List<Feedback> replied, List<Feedback> reported) getListOfFeedback()
         {
             var unreplied = new List<Feedback>();
             var replied = new List<Feedback>();
+            var reported = new List<Feedback>();
 
             foreach (var feedback in Feedbacks)
             {
-                if (feedback.replied)
+                if (feedback.replied && !feedback.reported)
                     replied.Add(feedback);
-                else
-                    unreplied.Add(feedback);
+                else if (feedback.reported)
+                    reported.Add(feedback);
+                else if (!feedback.replied && !feedback.reported)
+                    unreplied.Add(feedback);    
             }
 
-            return (unreplied, replied);
+            return (unreplied, replied, reported);
         }
         public Feedback getFeedbackByID(string id)
         {
