@@ -20,6 +20,17 @@ chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please impro
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", "104", "Clara Lee", DateTime.Now.AddDays(-3)));
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Staff", "I HATE YOUR STAFF", "105", "John Doe", DateTime.Now.AddDays(-4)));
 
+FoodStall pizzaStall = new FoodStall("Mario's Pizza Corner", "Authentic Italian pizzas and pasta dishes.", "9876-5433", "Food Court, Stall #3", "pizza.jpg", StallStatus.Active);
+pizzaStall.AddMenuItem("Margherita Pizza", "Classic pizza with tomato, mozzarella, and basil.", 12.90f, 8);
+pizzaStall.AddMenuItem("Pepperoni Pizza", "Pizza topped with spicy pepperoni slices.", 15.90f, 5);
+pizzaStall.AddMenuItem("Spaghetti Carbonara", "Creamy pasta with bacon and parmesan.", 11.50f, 6);
+
+FoodStall burgerStall = new FoodStall("Burger Haven", "Juicy burgers and crispy fries for burger lovers.", "9876-5434", "Food Court, Stall #7", "burger.jpg", StallStatus.Active);
+burgerStall.AddMenuItem("Classic Beef Burger", "Beef patty with lettuce, tomato, and special sauce.", 8.90f, 10);
+burgerStall.AddMenuItem("Chicken Burger", "Grilled chicken breast with fresh vegetables.", 7.90f, 12);
+burgerStall.AddMenuItem("Cheese Fries", "Crispy fries topped with melted cheese.", 4.50f, 15);
+
+
 // Time Slot
 var timeSlot = new TimeSlot(
     timeSlotID: 7,
@@ -211,10 +222,18 @@ if(userType == "Student")
     Console.WriteLine();
     Console.WriteLine("  1. Register & Login with school credentials");
     Console.WriteLine("  2. Browse food stalls & menus");
-    Console.WriteLine("  3. Place orders & choose pick-up time");
-    Console.WriteLine("  4. Pay digitally & receive QR code");
-    Console.WriteLine("  5. Real-time menu updates");
-    Console.WriteLine("  6. Priority user perks (extra limits, VIP pick-up)");
+    Console.WriteLine("  3. Place an order");
+    Console.WriteLine("  4. Real-time menu updates");
+    Console.WriteLine("  5. Priority user perks (extra limits, VIP pick-up)");
+    string? option = Console.ReadLine();
+    if (option == "2")
+    {
+        BrowseFoodStalls();
+    }
+    else if (option == "3")
+    {
+
+    }
 }
 else if (userType == "Staff")
 {
@@ -985,5 +1004,112 @@ void InitiateUpdateOrderStatus(Order od)
         {
             Console.WriteLine("Invalid selection. Please try again.");
         }
+    }
+}
+
+void BrowseFoodStalls()
+{
+
+    List<FoodStall> allStalls = new List<FoodStall> { chickenRiceStall, pizzaStall, burgerStall };
+
+    while (true)
+    {
+        Console.WriteLine("=== Browse Food Stalls ===");
+        Console.WriteLine();
+
+        // Display all available stalls
+        Console.WriteLine("Available Food Stalls:");
+        for (int i = 0; i < allStalls.Count; i++)
+        {
+            var stall = allStalls[i];
+            Console.WriteLine($"{i + 1}. {stall.StallName}");
+            Console.WriteLine($"   Location: {stall.StallLocation}");
+            Console.WriteLine($"   Description: {stall.StalllDescription}");
+            Console.WriteLine($"   Status: {stall.Status}");
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Options:");
+        Console.WriteLine("1. View detailed menu for a stall");
+        Console.WriteLine("0. Return to main menu");
+        Console.Write("Select an option: ");
+
+        string? choice = Console.ReadLine();
+
+        if (choice == "0")
+        {
+            break;
+        }
+        else if (choice == "1")
+        {
+            ViewStallMenu(allStalls);
+        }
+        else
+        {
+            Console.WriteLine("Invalid option. Please try again.");
+        }
+        Console.WriteLine();
+    }
+}
+
+void ViewStallMenu(List<FoodStall> stalls)
+{
+    Console.Write("Enter the stall number to view menu: ");
+    string? choice = Console.ReadLine();
+    try
+    {
+        int index = Convert.ToInt32(choice);
+
+        if (index > 0 && index <= stalls.Count)
+        {
+            FoodStall selectedStall = stalls[index - 1];
+            Console.WriteLine();
+            DisplayMenuItems(selectedStall);
+
+            Console.WriteLine("Options:");
+            Console.WriteLine("1. View item details");
+            Console.WriteLine("0. Return to stall browse");
+            Console.Write("Select an option: ");
+
+            string? menuChoice = Console.ReadLine();
+            if (menuChoice == "1")
+            {
+                ViewItemDetails(selectedStall);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid stall number.");
+        }
+    }
+    catch (Exception)
+    {
+        Console.WriteLine("Invalid stall number.");
+    }
+}
+
+void ViewItemDetails(FoodStall stall)
+{
+    Console.Write("Enter the Item ID to view details: ");
+    string? choice = Console.ReadLine();
+
+    try
+    {
+        int itemId = Convert.ToInt32(choice);
+
+        MenuItem? item = stall.GetMenuItemById(itemId);
+        if (item != null)
+        {
+            Console.WriteLine();
+            DisplayMenuItemDetails(item);
+        }
+        else
+        {
+            Console.WriteLine("Item not found.");
+        }
+    }
+    catch (Exception)
+    {
+        Console.WriteLine("Invalid Item ID.");
     }
 }
