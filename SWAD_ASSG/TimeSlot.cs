@@ -16,6 +16,8 @@ namespace SWAD_ASSG
         public bool IsExclusive { get; set; }
         public int MaxOrders { get; set; }
 
+        public int CurrentOrderCount { get; set; }
+
         public List<Order> Orders { get; set; } = new List<Order>();
 
         public TimeSlot() { }
@@ -30,6 +32,15 @@ namespace SWAD_ASSG
             IsAvailable = isAvailable;
             IsExclusive = isExclusive;
             MaxOrders = maxOrders;
+            CurrentOrderCount = 0;
+        }
+
+        public bool ValidateTimeSlot()
+        {
+            if (!IsAvailable) return false;
+            if (CurrentOrderCount >= MaxOrders) return false;
+            if (StartTime <= DateTime.Now) return false;
+            return true;
         }
     }
 }

@@ -30,6 +30,9 @@ burgerStall.AddMenuItem("Classic Beef Burger", "Beef patty with lettuce, tomato,
 burgerStall.AddMenuItem("Chicken Burger", "Grilled chicken breast with fresh vegetables.", 7.90f, 12);
 burgerStall.AddMenuItem("Cheese Fries", "Crispy fries topped with melted cheese.", 4.50f, 15);
 
+List<FoodStall> allStalls = new List<FoodStall> { chickenRiceStall, pizzaStall, burgerStall };
+
+
 
 // Time Slot
 var timeSlot = new TimeSlot(
@@ -232,7 +235,7 @@ if(userType == "Student")
     }
     else if (option == "3")
     {
-
+        PlaceFoodOrder(allStalls);
     }
 }
 else if (userType == "Staff")
@@ -1010,7 +1013,6 @@ void InitiateUpdateOrderStatus(Order od)
 void BrowseFoodStalls()
 {
 
-    List<FoodStall> allStalls = new List<FoodStall> { chickenRiceStall, pizzaStall, burgerStall };
 
     while (true)
     {
@@ -1112,4 +1114,161 @@ void ViewItemDetails(FoodStall stall)
     {
         Console.WriteLine("Invalid Item ID.");
     }
+}
+
+
+
+
+void PlaceFoodOrder(List<FoodStall> allStalls)
+{
+    Console.WriteLine("=== Place Food Order ===");
+
+    // 1. Show stalls
+    for (int i = 0; i < allStalls.Count; i++)
+    {
+        Console.WriteLine($"{i + 1}. {allStalls[i].StallName} - {allStalls[i].StallLocation} ({allStalls[i].Status})");
+    }
+
+    Console.Write("Select stall number (or 0 to cancel): ");
+    int stallChoice;
+    try
+    {
+        stallChoice = Convert.ToInt32(Console.ReadLine());
+    }
+    catch
+    {
+        Console.WriteLine("Invalid input. Returning to menu.");
+        return;
+    }
+
+    if (stallChoice == 0) return;
+    if (stallChoice < 1 || stallChoice > allStalls.Count)
+    {
+        Console.WriteLine("Invalid stall number.");
+        return;
+    }
+
+    FoodStall selectedStall = allStalls[stallChoice - 1];
+
+    // 1.3 enterOrderDetails(menuSelection, quantity)
+    Console.WriteLine($"\nMenu for {selectedStall.StallName}:");
+    DisplayMenuItems(selectedStall);
+
+    Console.Write("Enter the Item ID you want to order (or 0 to cancel): ");
+    int itemId;
+    try
+    {
+        itemId = Convert.ToInt32(Console.ReadLine());
+    }
+    catch
+    {
+        Console.WriteLine("Invalid Item ID.");
+        return;
+    }
+
+    if (itemId == 0) return;
+
+    MenuItem menuItem = selectedStall.GetMenuItemById(itemId);
+    if (menuItem == null)
+    {
+        Console.WriteLine("Item not found.");
+        return;
+    }
+
+    Console.Write($"Enter quantity for '{menuItem.ItemName}': ");
+    int qty;
+    try
+    {
+        qty = Convert.ToInt32(Console.ReadLine());
+    }
+    catch
+    {
+        Console.WriteLine("Invalid quantity.");
+        return;
+    }
+
+    // 1.2 checkItemQuantity
+    if (!menuItem.CheckItemQuantity(qty))
+    {
+        // 3.2 displayStockError
+        Console.WriteLine($"Sorry, only {menuItem.ItemQuantity} unit(s) available. Order not placed.");
+        return;
+    }
+
+    // 1.3 calculateItemPrices
+    float totalPrice = menuItem.ItemPrice * qty;
+
+    // 1.4 displayConfirmScreen
+    Console.WriteLine("\n--- Confirm Order ---");
+    Console.WriteLine($"Item: {menuItem.ItemName}");
+    Console.WriteLine($"Quantity: {qty}");
+    Console.WriteLine($"Total Price: ${totalPrice:F2}");
+    Console.Write("Confirm order? (y/n): ");
+    string confirm = Console.ReadLine().Trim().ToLower();
+    if (confirm != "y") return;
+
+    List<TimeSlot> allSlots = new List<TimeSlot>
+    {
+        new TimeSlot(1, selectedStall.StallID, DateTime.Today.AddHours(10), DateTime.Today.AddHours(11), true, false, 5),
+        new TimeSlot(2, selectedStall.StallID, DateTime.Today.AddHours(11), DateTime.Today.AddHours(12), true, false, 5),
+        new TimeSlot(3, selectedStall.StallID, DateTime.Today.AddHours(12), DateTime.Today.AddHours(13), true, false, 5),
+        new TimeSlot(4, selectedStall.StallID, DateTime.Today.AddHours(13), DateTime.Today.AddHours(14), true, false, 5)
+    };
+
+
+    // 3.1 choosePickupTimeslot
+    List<TimeSlot> availableSlots = selectedStall.GetAvailableTimeSlots(allSlots, "student");
+
+    if (availableSlots.Count == 0)
+    {
+        Console.WriteLine("No pickup slots available. Order cannot be placed.");
+        return;
+    }
+
+    Console.Write("Select a pickup slot: \n");
+    for (int i = 0; i < availableSlots.Count; i++)
+    {
+        Console.WriteLine($"{i + 1}. {availableSlots[i].StartTime:HH:mm} - {availableSlots[i].EndTime:HH:mm}");
+    }
+
+    int timeChoice;
+    try
+    {
+        timeChoice = Convert.ToInt32(Console.ReadLine());
+    }
+    catch
+    {
+        Console.WriteLine("Invalid choice.");
+        return;
+    }
+
+    if (timeChoice < 1 || timeChoice > availableSlots.Count)
+    {
+        Console.WriteLine("Invalid choice.");
+        return;
+    }
+
+    TimeSlot chosenSlot = availableSlots[timeChoice - 1];
+    DateTime pickupTime = chosenSlot.StartTime;
+
+    Order newOrder = new Order(
+        orderID: new Random().Next(1000, 9999),
+        studentID: 1, 
+        stall: selectedStall,
+        totalAmount: Convert.ToDecimal(totalPrice),
+        orderTime: DateTime.Now,
+        timeSlotID: 1,
+        pickupTime: pickupTime
+    );
+
+    OrderItem orderItem = new OrderItem
+    {
+        OrderItemID = 1,
+        MenuItemID = itemId,
+        Quantity = qty
+    };
+    newOrder.AddOrderItem(orderItem);
+
+    // 3.2 displayOrderScreen
+    newOrder.DisplayOrderSummary();
 }

@@ -49,6 +49,32 @@ namespace SWAD_ASSG
             return Menu;
         }
 
+        public List<TimeSlot> GetAvailableTimeSlots(List<TimeSlot> slots, string userType)
+        {
+            var availableSlots = new List<TimeSlot>();
+
+            foreach (TimeSlot slot in slots)
+            {
+                if (slot.ValidateTimeSlot())
+                {
+                    availableSlots.Add(slot);
+                }
+            }
+            return availableSlots;
+        }
+
+        public TimeSlot GetTimeSlotById(List<TimeSlot> slots, int id)
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.TimeSlotID == id)
+                {
+                    return slot;
+                }
+            }
+            return null;
+        }
+
         public MenuItem GetMenuItemById(int itemId)
         {
             foreach (var item in Menu)
@@ -135,6 +161,24 @@ namespace SWAD_ASSG
             }
         }
 
+        public bool AreItemsAvailable(List<OrderItem> orderItems)
+        {
+            foreach (var orderItem in orderItems)
+            {
+                var menuItem = GetMenuItemById(orderItem.MenuItemID);
+                if (menuItem == null || !menuItem.CheckItemQuantity(orderItem.Quantity))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void DisplayStockError()
+        {
+            Console.WriteLine("Sorry, some items in your order are no longer available or out of stock.");
+            Console.WriteLine("Please review your order and try again.");
+        }
 
     }
 }

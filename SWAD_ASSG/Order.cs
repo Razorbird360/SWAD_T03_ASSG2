@@ -85,6 +85,28 @@ namespace SWAD_ASSG
             }
         }
 
+        public void DisplayOrderSummary()
+        {
+            Console.WriteLine($"\n=== Order Summary ===");
+            Console.WriteLine($"Order ID: {OrderID}");
+            Console.WriteLine($"Total Price: ${TotalAmount:F2}");
+            Console.WriteLine($"Order Time: {OrderTime}");
+            Console.WriteLine();
+        }
+
+        public float CalculateItemPrices()
+        {
+            float total = 0;
+            foreach (var item in Items)
+            {
+                var menuItem = FoodStall.GetMenuItemById(item.MenuItemID);
+                if (menuItem != null)
+                {
+                    total += menuItem.ItemPrice * item.Quantity;
+                }
+            }
+            return total;
+        }
 
         public override string ToString()
         {

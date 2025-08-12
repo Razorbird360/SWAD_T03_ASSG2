@@ -65,5 +65,15 @@ namespace SWAD_ASSG
                 return "Out of Stock";
             }
         }
+
+        public bool CheckItemQuantity(int requestedQuantity)
+        {
+            return ItemQuantity >= requestedQuantity;
+        }
     }
 }
+
+
+
+
+
