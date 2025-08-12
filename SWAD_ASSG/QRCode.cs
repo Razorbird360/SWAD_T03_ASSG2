@@ -22,6 +22,12 @@ namespace SWAD_ASSG
 
         public Order Order { get; set; }
 
+        public DateTime PickupTime
+        {
+            get { return ExpiryTime.AddMinutes(-30); }
+            set { ExpiryTime = value.AddMinutes(30); }
+        }
+
         public QRCode() { }
 
         public QRCode(int qrCodeID, int orderID, DateTime generatedTime, DateTime expiryTime, CollectionStatus collectionStatus)
@@ -31,6 +37,11 @@ namespace SWAD_ASSG
             GeneratedTime = generatedTime;
             ExpiryTime = expiryTime;
             CollectionStatus = collectionStatus;
+        }
+
+        public bool sendQRCodeEmail()
+        {
+            return true;
         }
     }
 }

@@ -1271,4 +1271,98 @@ void PlaceFoodOrder(List<FoodStall> allStalls)
 
     // 3.2 displayOrderScreen
     newOrder.DisplayOrderSummary();
+    Payment(true); // Simulate successful payment
+    Console.WriteLine("\nGenerating QR Code for order collection...");
+    GenerateQRCode(newOrder.OrderID);
+}
+
+
+
+void Payment(bool paymentSuccess)
+{
+    Console.WriteLine("=== Payment Process ===");
+    Console.WriteLine();
+
+    int orderID = 1234;
+    decimal amount = 15.50m;
+    string orderDetails = "Chicken Rice";
+    string paymentMethod = "Credit/Debit Card";
+
+    Console.WriteLine($"Processing payment for Order #{orderID}");
+    Console.WriteLine($"Item: {orderDetails}");
+    Console.WriteLine($"Amount: ${amount:F2}");
+    Console.WriteLine($"Payment Method: {paymentMethod}");
+
+    Console.WriteLine("\nProcessing payment...");
+    System.Threading.Thread.Sleep(1000);
+
+    if (paymentSuccess)
+    {
+        Console.WriteLine("Payment processed successfully!");
+
+        Console.WriteLine($"Order #{orderID} status updated to 'Paid'");
+
+        Console.WriteLine("\n--- RECEIPT ---");
+        Console.WriteLine($"Order ID: #{orderID}");
+        Console.WriteLine($"Student ID: 12345");
+        Console.WriteLine($"Item: {orderDetails}");
+        Console.WriteLine($"Amount: ${amount:F2}");
+        Console.WriteLine($"Payment Method: {paymentMethod}");
+        Console.WriteLine($"Transaction Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        Console.WriteLine($"Transaction ID: TXN123456");
+        Console.WriteLine("Status: PAID");
+        Console.WriteLine("--- END RECEIPT ---");
+
+        Console.WriteLine("\nPayment confirmation sent to student email");
+
+        Console.WriteLine("\nPayment completed successfully!");
+        Console.WriteLine("You will receive an email confirmation shortly.");
+        Console.WriteLine($"Your order #{orderID} is now confirmed and being prepared.");
+    }
+    else
+    {
+        string[] failureReasons = {
+            "Insufficient funds",
+            "Card declined by bank",
+            "Network connection error",
+            "Payment gateway timeout",
+            "Invalid card details"
+        };
+
+        string failureReason = failureReasons[0];
+
+        Console.WriteLine("Payment failed!");
+        Console.WriteLine($"Reason: {failureReason}");
+
+        Console.WriteLine($"Error logged for Order #{orderID}");
+
+        Console.WriteLine("\nPayment Error");
+        Console.WriteLine($"Failed to process payment for Order #{orderID}");
+        Console.WriteLine($"Error: {failureReason}");
+        Console.WriteLine("Please try again with a different payment method or contact support.");
+    }
+}
+
+void GenerateQRCode(int orderID)
+{
+    Console.WriteLine("=== QR Code ===");
+    QRCode qrCode = new QRCode();
+    qrCode.QRCodeID = 1001;
+    qrCode.OrderID = orderID;
+    qrCode.GeneratedTime = DateTime.Now;
+    qrCode.PickupTime = DateTime.Now.AddHours(2);
+    qrCode.CollectionStatus = CollectionStatus.NotCollected;
+
+    bool emailSuccess = true;
+
+    if (emailSuccess)
+    {
+        qrCode.sendQRCodeEmail();
+        Console.WriteLine($"QR Code {qrCode.QRCodeID} generated for Order #{orderID}");
+        Console.WriteLine($"Valid until: {qrCode.ExpiryTime:HH:mm}");
+    }
+    else
+    {
+        Console.WriteLine("Email delivery failed. Please try again.");
+    }
 }
