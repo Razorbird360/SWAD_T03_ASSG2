@@ -196,6 +196,25 @@ namespace SWAD_ASSG
         }
 
 
+        public string RetrieveOrderDetails()
+        {
+            var details = $"Details for Order ID: {OrderID}\n" +
+                          $"Student ID: {StudentID}\n" +
+                          $"Total Amount: {TotalAmount:C}\n" +
+                          $"Order Time: {OrderTime}\n" +
+                          $"Pickup Time: {PickupTime}\n" +
+                          $"Order Status: {OrderStatus}\n\n" +
+                          "Items in this order:\n";
+
+            foreach (var item in Items)
+            {
+                details += $"- {item.MenuItem.ItemName} (Quantity: {item.Quantity})\n";
+            }
+
+            return details;
+        }
+
+
     }
 
 }

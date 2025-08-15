@@ -863,18 +863,7 @@ void ViewIncomingOrders()
                 Order? selectedOrder = incomingOrders.FirstOrDefault(o => o.OrderID == orderId);
                 if (selectedOrder != null)
                 {
-                    Console.WriteLine($"Details for Order ID: {selectedOrder.OrderID}");
-                    Console.WriteLine($"Student ID: {selectedOrder.StudentID}");
-                    Console.WriteLine($"Total Amount: {selectedOrder.TotalAmount:C}");
-                    Console.WriteLine($"Order Time: {selectedOrder.OrderTime}");
-                    Console.WriteLine($"Pickup Time: {selectedOrder.PickupTime}");
-                    Console.WriteLine($"Order Status: {selectedOrder.OrderStatus}");
-                    Console.WriteLine();
-                    Console.WriteLine("Items in this order:");
-                    foreach (var item in selectedOrder.Items)
-                    {
-                        Console.WriteLine($"- {item.MenuItem.ItemName} (Quantity: {item.Quantity})");
-                    }
+                    Console.WriteLine(selectedOrder.RetrieveOrderDetails());
 
                     Console.WriteLine();
                     Console.WriteLine("Would you like to update the order status? (y/n)");
