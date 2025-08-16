@@ -313,6 +313,7 @@ void ManageMenuItems()
 {
     while (true)
     {
+        FoodStall stall = staff.StallAffiliation;
         Console.WriteLine("==== Manage Menu Items ====");
         Console.WriteLine("1. Edit Menu Item");
         Console.WriteLine("2. Add New Menu Item");
@@ -334,18 +335,18 @@ void ManageMenuItems()
             }
             else if (manageOption == "1")
             {
-               EditMenuItems();
+               EditMenuItems(stall);
             }
             else if (manageOption == "2")
             {
-                AddNewMenuItem();
+                AddNewMenuItem(stall);
             }
             else
             {
                 Console.WriteLine("Invalid option! Please try again.");
             }
             Console.WriteLine("Final Menu Items:");
-            DisplayMenuItems(chickenRiceStall);
+            DisplayMenuItems(stall);
         }
         catch (Exception ex)
         {
@@ -354,12 +355,12 @@ void ManageMenuItems()
     }
 }
 
-void EditMenuItems()
+void EditMenuItems(FoodStall stall)
 {
     bool continueUpdate = true;
     while (continueUpdate)
     {
-        DisplayMenuItems(chickenRiceStall);
+        DisplayMenuItems(stall);
         Console.WriteLine();
         // Select an item to edit
         Console.Write("Enter the Item ID to select the item: ");
@@ -370,7 +371,7 @@ void EditMenuItems()
             Console.WriteLine("Invalid Item ID! Please enter a valid Item ID from the menu.");
             continue;
         }
-        MenuItem? item = chickenRiceStall.GetMenuItemById(itemId);
+        MenuItem? item = stall.GetMenuItemById(itemId);
         if (item == null)
         {
             Console.WriteLine("Item not found with the provided Item ID. Please try again.");
@@ -404,11 +405,11 @@ void EditMenuItems()
             }
             else if (editOption == "1")
             {
-                UpdateMenuItem(item);
+                UpdateMenuItem(stall, item);
             }
             else if (editOption == "2")
             {
-                DeleteMenuItem(item);
+                DeleteMenuItem(stall, item);
             }
 
             Console.Write("Do you want to continue editing menu items? (yes/no): ");
@@ -436,7 +437,7 @@ void EditMenuItems()
     }
 }
 
-void UpdateMenuItem(MenuItem item)
+void UpdateMenuItem(FoodStall stall, MenuItem item)
 {
     bool updating = true;
     while (updating)
@@ -468,48 +469,48 @@ void UpdateMenuItem(MenuItem item)
         {
             Console.Write("Enter new name for the item: ");
             string? newName = Console.ReadLine();
-            if (!validateFieldValue("name", newName, item))
+            if (!validateFieldValue(stall, "name", newName, item))
             {
                 Console.WriteLine("Invalid name. Please try again. The name must be unique and not empty.");
                 break;
             }
-            chickenRiceStall.UpdateField(item, "name", newName);
+            stall.UpdateField(item, "name", newName);
             Console.WriteLine($"Item name updated to: {newName}");
         }
         else if (fieldChoice == "2")
         {
             Console.WriteLine("Enter new description for the item: ");
             string? newDescription = Console.ReadLine();
-            if (!validateFieldValue("description", newDescription, item))
+            if (!validateFieldValue(stall, "description", newDescription, item))
             {
                 Console.WriteLine("Invalid description. Please try again. The description cannot be empty.");
                 break;
             }
-            chickenRiceStall.UpdateField(item, "description", newDescription);
+            stall.UpdateField(item, "description", newDescription);
             Console.WriteLine($"Item description updated to: {newDescription}");
         }
         else if (fieldChoice == "3")
         {
             Console.Write("Enter new price for the item: $");
             float priceInput = float.Parse(Console.ReadLine());
-            if (!validateFieldValue("price", priceInput, item))
+            if (!validateFieldValue(stall, "price", priceInput, item))
             {
                 Console.WriteLine("Invalid price. Please try again. The price cannot be negative.");
                 break;
             }
-            chickenRiceStall.UpdateField(item, "price", priceInput);
+            stall.UpdateField(item, "price", priceInput);
             Console.WriteLine($"Item price updated to: ${priceInput:F2}");
         }
         else if (fieldChoice == "4")
         {
             Console.Write("Enter new quantity for the item: ");
             int quantityInput = Convert.ToInt32(Console.ReadLine());
-            if (!validateFieldValue("quantity", quantityInput, item))
+            if (!validateFieldValue(stall, "quantity", quantityInput, item))
             {
                 Console.WriteLine("Invalid quantity. Please try again. The quantity cannot be negative.");
                 break;
             }
-            chickenRiceStall.UpdateField(item, "quantity", quantityInput);
+            stall.UpdateField(item, "quantity", quantityInput);
             Console.WriteLine($"Item quantity updated to: {quantityInput}");
         }
         Console.WriteLine();
@@ -521,7 +522,7 @@ void UpdateMenuItem(MenuItem item)
     Console.WriteLine();
 }
 
-void DeleteMenuItem(MenuItem item)
+void DeleteMenuItem(FoodStall stall, MenuItem item)
 {
     while (true)
     {
@@ -534,7 +535,7 @@ void DeleteMenuItem(MenuItem item)
         }
         else if (confirmDelete == "yes")
         {
-            chickenRiceStall.RemoveMenuItemById(item.ItemID);
+            stall.RemoveMenuItemById(item.ItemID);
             Console.WriteLine($"Item '{item.ItemName}' has been deleted successfully.");
             Console.WriteLine();
             LogMenuItemChange("DELETE", item);
@@ -548,12 +549,12 @@ void DeleteMenuItem(MenuItem item)
     }
 }
 
-void AddNewMenuItem()
+void AddNewMenuItem(FoodStall stall)
 {
     Console.WriteLine("Adding a new menu item:");
     Console.Write("Enter item name: ");
     string? newItemName = Console.ReadLine();
-    if (!validateFieldValue("name", newItemName))
+    if (!validateFieldValue(stall, "name", newItemName))
     {
         Console.WriteLine("Invalid item name. Please try again. The name must be unique and not empty.");
         return;
@@ -561,7 +562,7 @@ void AddNewMenuItem()
 
     Console.Write("Enter item description: ");
     string? newItemDescription = Console.ReadLine();
-    if (!validateFieldValue("description", newItemDescription))
+    if (!validateFieldValue(stall, "description", newItemDescription))
     {
         Console.WriteLine("Invalid item description. Please try again. The description cannot be empty.");
         return;
@@ -569,7 +570,7 @@ void AddNewMenuItem()
 
     Console.Write("Enter item price: $");
     float newItemPrice = float.Parse(Console.ReadLine());
-    if (!validateFieldValue("price", newItemPrice))
+    if (!validateFieldValue(stall, "price", newItemPrice))
     {
         Console.WriteLine("Invalid item price. Please try again. The price cannot be negative.");
         return;
@@ -577,13 +578,13 @@ void AddNewMenuItem()
 
     Console.Write("Enter item quantity: ");
     int newItemQuantity = Convert.ToInt32(Console.ReadLine());
-    if (!validateFieldValue("quantity", newItemQuantity))
+    if (!validateFieldValue(stall, "quantity", newItemQuantity))
     {
         Console.WriteLine("Invalid item quantity. Please try again. The quantity cannot be negative.");
         return;
     }
 
-    MenuItem newItem = chickenRiceStall.AddMenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
+    MenuItem newItem = stall.AddMenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
     Console.WriteLine($"New item '{newItem.ItemName}' added successfully.");
     LogMenuItemChange("ADD", newItem);
     Console.WriteLine();
@@ -599,7 +600,7 @@ void LogMenuItemChange(string action, MenuItem item)
         $"Time of change: {DateTime.Now} \n");
 }
 
-bool validateFieldValue(string field, object value, MenuItem currentItem = null)
+bool validateFieldValue(FoodStall stall, string field, object value, MenuItem currentItem = null)
 {
     if (field.ToLower() == "name")
     {
@@ -608,7 +609,7 @@ bool validateFieldValue(string field, object value, MenuItem currentItem = null)
         {
             return false; // Name cannot be empty
         }
-        foreach (var item in chickenRiceStall.Menu)
+        foreach (var item in stall.Menu)
         {
             if (item.ItemName.Trim().ToLower() == name)
             {
