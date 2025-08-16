@@ -17,8 +17,7 @@ chickenRiceStall.AddMenuItem("Braised Egg", "Soy sauce braised egg, a perfect si
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Small Portion", "The chicken rice portion is too small.", "101", "Alice Tan", DateTime.Now.AddDays(-2)));
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "More Veggie Options", "Please add more vegetarian dishes to the menu.", "102", "Ben Wong", DateTime.Now.AddDays(-1)));
 chickenRiceStall.Feedbacks.Add(new Feedback(1, "Hygiene Concerns", "Please improve cleanliness at the stall.", "103", "Daniel Lim", DateTime.Now.AddDays(-5)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Great Taste", "The food tastes amazing but takes a bit too long.", "104", "Clara Lee", DateTime.Now.AddDays(-3)));
-chickenRiceStall.Feedbacks.Add(new Feedback(1, "Staff", "I HATE YOUR STAFF", "105", "John Doe", DateTime.Now.AddDays(-4)));
+chickenRiceStall.Feedbacks.Add(new Feedback(1, "Staff", "I HATE YOUR STAFF", "104", "John Doe", DateTime.Now.AddDays(-4)));
 
 FoodStall pizzaStall = new FoodStall("Mario's Pizza Corner", "Authentic Italian pizzas and pasta dishes.", "9876-5433", "Food Court, Stall #3", "pizza.jpg", StallStatus.Active);
 pizzaStall.AddMenuItem("Margherita Pizza", "Classic pizza with tomato, mozzarella, and basil.", 12.90f, 8);
@@ -28,7 +27,7 @@ pizzaStall.AddMenuItem("Spaghetti Carbonara", "Creamy pasta with bacon and parme
 FoodStall burgerStall = new FoodStall("Burger Haven", "Juicy burgers and crispy fries for burger lovers.", "9876-5434", "Food Court, Stall #7", "burger.jpg", StallStatus.Active);
 burgerStall.AddMenuItem("Classic Beef Burger", "Beef patty with lettuce, tomato, and special sauce.", 8.90f, 10);
 burgerStall.AddMenuItem("Chicken Burger", "Grilled chicken breast with fresh vegetables.", 7.90f, 12);
-burgerStall.AddMenuItem("Cheese Fries", "Crispy fries topped with melted cheese.", 4.50f, 15);
+burgerStall.AddMenuItem("Cheese Fries", "Crispy fries topped with melted cheese.", 4.50f, 15);  
 
 List<FoodStall> allStalls = new List<FoodStall> { chickenRiceStall, pizzaStall, burgerStall };
 
@@ -111,7 +110,7 @@ Administrator admin = new Administrator(
 
 // Add FoodStallStaff
 var staff = new FoodStallStaff(
-    userID: "99",
+    userID: "1",
     name: "John",
     email: "john@example.com",
     password: "pass123",
@@ -164,6 +163,20 @@ while (true)
         Console.Write("Password: ");
         string? password = Console.ReadLine();
         userType = "Staff";
+        if(userID != "1")
+        {
+            staff = new FoodStallStaff(
+                userID: "2",
+                name: "John",
+                email: "john@example.com",
+                password: "pass123",
+                staffContact: "12345678",
+                dateOfEmployment: DateTime.Now.AddYears(-1),
+                emergencyContactNumber: "87654321",
+                stallAffiliation: pizzaStall
+            );
+            pizzaStall.AddStaffMember(staff);
+        }
         break;
     }
     else if (userInput == "3")
@@ -216,73 +229,79 @@ while (true)
         Console.WriteLine("Please enter a valid input");
     }
 }
+while (true)
+{
+    Console.WriteLine();
+    if (userType == "Student")
+    {
+        // change the options accordingly these are fake example ones
+        Console.WriteLine("Welcome Student!");
+        Console.WriteLine();
+        Console.WriteLine("  1. Browse food stalls & menus");
+        Console.WriteLine("  2. Place an order");
+        Console.WriteLine("  3. Real-time menu updates");
+        Console.WriteLine("  4. Priority user perks (extra limits, VIP pick-up)");
+        Console.WriteLine();
+        Console.Write("Select an option: ");
+        string? option = Console.ReadLine();
+        if (option == "1")
+        {
+            BrowseFoodStalls();
+        }
+        else if (option == "2")
+        {
+            PlaceFoodOrder(allStalls);
+        }
+        else
+        {
+            Console.WriteLine("Please enter a valid input or that feature you have selected has not been implemented. Please try again");
+        }
+    }
+    else if (userType == "Staff")
+    {
+        // change the options accordingly these are fake example ones
+        Console.WriteLine("Welcome Staff!");
+        Console.WriteLine();
+        Console.WriteLine("  1. Manage stall profile");
+        Console.WriteLine("  2. View & track incoming orders");
+        Console.WriteLine("  3. Manage Menu Items");
+        Console.WriteLine("  4. Response to feedback");
+        Console.WriteLine("  5. Cancel orders & manage no-shows");
+        Console.WriteLine("  6. Track sales performance");
+        Console.WriteLine();
+        Console.Write("Select an option: ");
+        string? option = Console.ReadLine();
+        if (option == "2")
+        {
+            ViewIncomingOrders();
+        }
+        else if (option == "3")
+        {
+            ManageMenuItems();
+        }
+        else if (option == "4")
+        {
+            RespondToFeedback();
+        }
+        else
+        {
+            Console.WriteLine("Please enter a valid input or that feature you have selected has not been implemented. Please try again");
+        }
+        Console.WriteLine();
+    }
+    else if (userType == "Admin")
+    {
+        // change the options accordingly these are fake example ones
+        Console.WriteLine("Welcome Admin!");
+        Console.WriteLine();
+        Console.WriteLine("  1. Manage student & staff accounts");
+        Console.WriteLine("  2. Review & moderate content");
+        Console.WriteLine("  3. Manage policy configurations");
+        Console.WriteLine("  4. Resolve disputes");
+        Console.WriteLine("  5. View analytics & reports");
+    }
+}
 
-Console.WriteLine();
-if(userType == "Student")
-{
-    // change the options accordingly these are fake example ones
-    Console.WriteLine("Welcome Student!");
-    Console.WriteLine();
-    Console.WriteLine("  1. Register & Login with school credentials");
-    Console.WriteLine("  2. Browse food stalls & menus");
-    Console.WriteLine("  3. Place an order");
-    Console.WriteLine("  4. Real-time menu updates");
-    Console.WriteLine("  5. Priority user perks (extra limits, VIP pick-up)");
-    string? option = Console.ReadLine();
-    if (option == "2")
-    {
-        BrowseFoodStalls();
-    }
-    else if (option == "3")
-    {
-        PlaceFoodOrder(allStalls);
-    }
-}
-else if (userType == "Staff")
-{
-    // change the options accordingly these are fake example ones
-    Console.WriteLine("Welcome Staff!");
-    Console.WriteLine();
-    Console.WriteLine("  1. Manage stall profile");
-    Console.WriteLine("  2. View & track incoming orders");
-    Console.WriteLine("  3. Manage Menu Items");
-    Console.WriteLine("  4. Response to feedback");
-    Console.WriteLine("  5. Cancel orders & manage no-shows");
-    Console.WriteLine("  6. Track sales performance");
-    string? option = Console.ReadLine();
-    if (option == "1")
-    {
-
-    }
-    else if (option == "2")
-    {
-        ViewIncomingOrders();
-    }
-    else if (option == "3")
-    {
-        ManageMenuItems();
-    }else if(option == "4")
-    {
-        RespondToFeedback();
-    }
-    Console.WriteLine();
-}
-else if (userType == "Admin")
-{
-    // change the options accordingly these are fake example ones
-    Console.WriteLine("Welcome Admin!");
-    Console.WriteLine();
-    Console.WriteLine("  1. Manage student & staff accounts");
-    Console.WriteLine("  2. Review & moderate content");
-    Console.WriteLine("  3. Manage policy configurations");
-    Console.WriteLine("  4. Resolve disputes");
-    Console.WriteLine("  5. View analytics & reports");
-}
-Console.WriteLine();
-Console.WriteLine("==============================================");
-Console.WriteLine("  Press any key to continue...");
-Console.WriteLine("==============================================");
-string? userOption = Console.ReadLine();
 
 // Manage Menu Items
 void DisplayMenuItems(FoodStall stall)
@@ -665,14 +684,16 @@ bool validateFieldValue(string field, object value, MenuItem currentItem = null)
 
 void RespondToFeedback()
 {
+    FoodStall foodstall = staff.StallAffiliation;
     while (true)
     {
-        var (unreplied, replied, reported) = chickenRiceStall.getListOfFeedback();
+        var (unreplied, replied, reported) = foodstall.getListOfFeedback();
         // Unreplied Feedback Section
         Console.WriteLine("=== Unreplied Feedback ===");
         if (unreplied.Count == 0)
         {
             Console.WriteLine("No feedback available to respond to.");
+            Console.WriteLine();
         }
         else
         {
@@ -737,7 +758,7 @@ void RespondToFeedback()
             Console.Write("Please enter the feedback ID you want to reply to: ");
             string feedbackID = Console.ReadLine();
 
-            Feedback feedbackToReply = chickenRiceStall.getFeedbackByID(feedbackID);
+            Feedback feedbackToReply = foodstall.getFeedbackByID(feedbackID);
             if (feedbackToReply == null || feedbackToReply.replied)
             {
                 Console.WriteLine("Invalid or already replied feedback ID.");
@@ -749,9 +770,9 @@ void RespondToFeedback()
             Console.WriteLine($"Comment: {feedbackToReply.comment}");
             Console.WriteLine();
             Console.WriteLine("Choose your options: ");
-            Console.WriteLine("1. Reply to Feedback");
+            Console.WriteLine("1. Response to Feedback");
             Console.WriteLine("2. Report as inappropriate feedback");
-            Console.Write("Select an option (1-2): ");
+            Console.Write("Select an option (1-2): ");  
             string option = Console.ReadLine();
 
             if (option == "1")
