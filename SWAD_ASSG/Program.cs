@@ -4,7 +4,6 @@ using System.Reflection.Metadata.Ecma335;
 
 // Create Chicken Rice Stall
 FoodStall chickenRiceStall = new FoodStall("Chicken Rice Stall", "Serving authentic chicken rice and related dishes.", "9876-5432", "Food Court, Stall #5", "chicken_rice.jpg", StallStatus.Active);
-Console.WriteLine(chickenRiceStall.StallID);
 // Add Menu Items
 chickenRiceStall.AddMenuItem("Hainanese Chicken Rice", "Steamed chicken with fragrant rice, chili & ginger paste.", 5.50f, 5);
 chickenRiceStall.AddMenuItem("Roasted Chicken Rice", "Crispy roasted chicken with aromatic rice and special sauce.", 6.00f, 3);
@@ -95,7 +94,6 @@ order2.TimeSlot = timeSlot;
 chickenRiceStall.AddOrder(order1);
 chickenRiceStall.AddOrder(order2);
 
-Console.WriteLine(order1.ToString());
 
 // Add admin of the system
 Administrator admin = new Administrator(
