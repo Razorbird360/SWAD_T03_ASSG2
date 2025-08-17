@@ -288,7 +288,7 @@ while (true)
     }
     else if (userType == "Admin")
     {
-        // change the options accordingly these are fake example ones
+        // example options (not accurate to admin use case features)
         Console.WriteLine("Welcome Admin!");
         Console.WriteLine();
         Console.WriteLine("  1. Manage student & staff accounts");
@@ -300,7 +300,7 @@ while (true)
 }
 
 
-// Manage Menu Items Use Case
+// Manage Menu Items Use Case - Serene Ker Xin Yun
 // Display the menu items for the stall
 void DisplayMenuItems(FoodStall stall)
 {
