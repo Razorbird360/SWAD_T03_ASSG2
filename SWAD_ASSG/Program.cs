@@ -771,7 +771,7 @@ void RespondToFeedback()
         // If no feedback at all, exit
         if (replied.Count == 0 && pending.Count == 0)
         {
-            Console.WriteLine("The food stall currently does not have any feedback. \nPlease Check again later");
+            Console.WriteLine("The food stall currently does not have any feedback. Please Check again later");
             break;
         }
 
@@ -807,7 +807,7 @@ void RespondToFeedback()
                     Console.WriteLine();
                     Console.Write("Enter your response: ");
                     string response = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(response))
+                    if (!ValidateResponse(response))
                     {
                         Console.WriteLine("Response cannot be empty, please fill it up before sending");
                         Console.WriteLine();
@@ -871,6 +871,14 @@ void RespondToFeedback()
 
     }
 }
+bool ValidateResponse(string? response)
+{
+    if (string.IsNullOrEmpty(response))
+    {
+        return false;
+    }
+    return true;
+}
 // Report Inappopriate Feedback - Rafe Chan Rui An S10266058G
 void ReportInappopriateFeedback(Feedback feedback)
 {
@@ -884,11 +892,9 @@ void ReportInappopriateFeedback(Feedback feedback)
         Console.WriteLine("Please enter the reason for your report");
         string? reason = Console.ReadLine();
 
-        if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(reason))
+        if (!ValidateReport(subject,reason))
         {
-            Console.WriteLine("Subject and reason cannot be empty.");
-            Console.WriteLine("Please try again");
-            Console.WriteLine();
+            Console.WriteLine("Subject and reason cannot be empty. Please try again");
             continue;
         }
         // Log the report to a file (Mimicking store to database)
@@ -902,6 +908,15 @@ void ReportInappopriateFeedback(Feedback feedback)
         Console.WriteLine("Your report has been submitted successfully. Thank you for your report.");
         break;
     }
+}
+
+bool ValidateReport(string? subject, string? reason)
+{
+    if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(reason))
+    {
+        return false;
+    }
+    return true;
 }
 
 void ViewIncomingOrders()
