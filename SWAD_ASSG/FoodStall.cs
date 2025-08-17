@@ -20,8 +20,11 @@ namespace SWAD_ASSG
         public string StallLocation { get; set; }
         public string ProfilePicture { get; set; }
         public StallStatus Status { get; set; }
+
+        // Association: One FoodStall has many MenuItems
         public List<MenuItem> Menu { get; set; }
 
+        // Unique identifier for menu items
         private int nextItemId = 1;
 
         // Association: One FoodStall has many Orders
@@ -43,7 +46,6 @@ namespace SWAD_ASSG
             Menu = new List<MenuItem>();
             Feedbacks = new List<Feedback>();
         }
-
         public List<MenuItem> GetMenuItems()
         {
             return Menu;

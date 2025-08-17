@@ -303,12 +303,14 @@ while (true)
 }
 
 
-// Manage Menu Items
+// Manage Menu Items Use Case
+// Display the menu items for the stall
 void DisplayMenuItems(FoodStall stall)
 {
     Console.WriteLine();
     Console.WriteLine($"===== {stall.StallName} Menu =====");
     Console.WriteLine("{0,-8} {1,-25} {2,8}", "Item ID", "Item Name", "Price ($)");
+    // Get the list of menu items from the stall
     List<MenuItem> menuList = stall.GetMenuItems();
     foreach (var item in menuList)
     {
@@ -316,10 +318,12 @@ void DisplayMenuItems(FoodStall stall)
     }
     Console.WriteLine();
 }
-
+// Display the details of a specific menu item
 void DisplayMenuItemDetails(MenuItem item)
 {
+    // Get the availability status of the item
     string? availabilityStatus = item.GetAvailabilityStatus();
+    // Display the item details
     Console.WriteLine($"Item ID: {item.ItemID}");
     Console.WriteLine($"Name: {item.ItemName}");
     Console.WriteLine($"Description: {item.ItemDescription}");
@@ -328,10 +332,12 @@ void DisplayMenuItemDetails(MenuItem item)
     Console.WriteLine($"Availability: {availabilityStatus}");
     Console.WriteLine();
 }
+// function to Manage Menu Items
 void ManageMenuItems()
 {
     while (true)
     {
+        // Get the stall affiliation of the staff
         FoodStall stall = staff.StallAffiliation;
         Console.WriteLine("==== Manage Menu Items ====");
         Console.WriteLine("1. Edit Menu Item");
@@ -354,16 +360,19 @@ void ManageMenuItems()
             }
             else if (manageOption == "1")
             {
-               EditMenuItems(stall);
+                // Edit existing menu items
+                EditMenuItems(stall);
             }
             else if (manageOption == "2")
             {
+                // Add new menu item
                 AddNewMenuItem(stall);
             }
             else
             {
                 Console.WriteLine("Invalid option! Please try again.");
             }
+            // Display the final menu items after editing or adding
             Console.WriteLine("Final Menu Items:");
             DisplayMenuItems(stall);
         }
@@ -373,12 +382,13 @@ void ManageMenuItems()
         }
     }
 }
-
+// Function to edit menu items
 void EditMenuItems(FoodStall stall)
 {
     bool continueUpdate = true;
     while (continueUpdate)
     {
+        // Display the current menu items
         DisplayMenuItems(stall);
         Console.WriteLine();
         // Select an item to edit
@@ -419,15 +429,18 @@ void EditMenuItems(FoodStall stall)
         {
             if (editOption == "0")
             {
+                // Exit the edit menu
                 Console.WriteLine("Exiting edit menu.");
                 continueUpdate = false;
             }
             else if (editOption == "1")
             {
+                // Update the selected item
                 UpdateMenuItem(stall, item);
             }
             else if (editOption == "2")
             {
+                // Delete the selected item
                 DeleteMenuItem(stall, item);
             }
 
@@ -455,7 +468,7 @@ void EditMenuItems(FoodStall stall)
         }
     }
 }
-
+// Function to update a menu item
 void UpdateMenuItem(FoodStall stall, MenuItem item)
 {
     bool updating = true;
@@ -486,6 +499,7 @@ void UpdateMenuItem(FoodStall stall, MenuItem item)
         }
         if (fieldChoice == "1")
         {
+            // Update item name
             Console.Write("Enter new name for the item: ");
             string? newName = Console.ReadLine();
             if (!validateFieldValue(stall, "name", newName, item))
@@ -498,6 +512,7 @@ void UpdateMenuItem(FoodStall stall, MenuItem item)
         }
         else if (fieldChoice == "2")
         {
+            // Update item description
             Console.WriteLine("Enter new description for the item: ");
             string? newDescription = Console.ReadLine();
             if (!validateFieldValue(stall, "description", newDescription, item))
@@ -510,6 +525,7 @@ void UpdateMenuItem(FoodStall stall, MenuItem item)
         }
         else if (fieldChoice == "3")
         {
+            // Update item price
             Console.Write("Enter new price for the item: $");
             float priceInput = float.Parse(Console.ReadLine());
             if (!validateFieldValue(stall, "price", priceInput, item))
@@ -522,6 +538,7 @@ void UpdateMenuItem(FoodStall stall, MenuItem item)
         }
         else if (fieldChoice == "4")
         {
+            // Update item quantity
             Console.Write("Enter new quantity for the item: ");
             int quantityInput = Convert.ToInt32(Console.ReadLine());
             if (!validateFieldValue(stall, "quantity", quantityInput, item))
@@ -537,6 +554,7 @@ void UpdateMenuItem(FoodStall stall, MenuItem item)
     // Display the updated item details
     Console.WriteLine("\nFinal Updated Menu Item:");
     DisplayMenuItemDetails(item);
+    // Log the update to a file
     LogMenuItemChange("UPDATE", item);
     Console.WriteLine();
 }
@@ -554,9 +572,11 @@ void DeleteMenuItem(FoodStall stall, MenuItem item)
         }
         else if (confirmDelete == "yes")
         {
+            // Delete the item
             stall.RemoveMenuItemById(item.ItemID);
             Console.WriteLine($"Item '{item.ItemName}' has been deleted successfully.");
             Console.WriteLine();
+            // Log the deletion to a file
             LogMenuItemChange("DELETE", item);
             break;
         }
@@ -567,10 +587,11 @@ void DeleteMenuItem(FoodStall stall, MenuItem item)
         }
     }
 }
-
+// Function to add a new menu item
 void AddNewMenuItem(FoodStall stall)
 {
     Console.WriteLine("Adding a new menu item:");
+    // Prompt for item details
     Console.Write("Enter item name: ");
     string? newItemName = Console.ReadLine();
     if (!validateFieldValue(stall, "name", newItemName))
@@ -602,13 +623,14 @@ void AddNewMenuItem(FoodStall stall)
         Console.WriteLine("Invalid item quantity. Please try again. The quantity cannot be negative.");
         return;
     }
-
+    // Add the new item to the stall's menu
     MenuItem newItem = stall.AddMenuItem(newItemName, newItemDescription, newItemPrice, newItemQuantity);
     Console.WriteLine($"New item '{newItem.ItemName}' added successfully.");
+    // Log the addition to a file
     LogMenuItemChange("ADD", newItem);
     Console.WriteLine();
 }
-
+// Function to log menu item changes to a file
 void LogMenuItemChange(string action, MenuItem item)
 {
     File.AppendAllText("menuItemLogs.txt",
@@ -618,9 +640,10 @@ void LogMenuItemChange(string action, MenuItem item)
         $"Quantity: {item.ItemQuantity}, Availability: {item.GetAvailabilityStatus()}, \n" +
         $"Time of change: {DateTime.Now} \n");
 }
-
+// Function to validate field values for menu items when updating or adding
 bool validateFieldValue(FoodStall stall, string field, object value, MenuItem currentItem = null)
 {
+    // Validate name field to ensure no duplicate names for menu items
     if (field.ToLower() == "name")
     {
         string name = Convert.ToString(value).Trim().ToLower();
@@ -643,6 +666,7 @@ bool validateFieldValue(FoodStall stall, string field, object value, MenuItem cu
             }
         }
     }
+    // Validate other fields
     if (field.ToLower() == "description")
     {
         string description = Convert.ToString(value).Trim();

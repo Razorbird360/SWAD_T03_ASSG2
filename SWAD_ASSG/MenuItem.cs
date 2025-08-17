@@ -14,10 +14,12 @@ namespace SWAD_ASSG
         public string ItemDescription { get; set; }
         public float ItemPrice { get; set; }
         public int ItemQuantity { get; set; }
+        // This property indicates whether the item is available based on its quantity
         public bool ItemAvailabilityStatus
         {
             get { return ItemQuantity > 0; }
         }
+        // Composition: Each MenuItem is associated with one FoodStall
         public FoodStall FoodStall { get; set; }
 
         internal MenuItem(string name, string desc, float price, int quantity, FoodStall foodStall)
@@ -28,7 +30,7 @@ namespace SWAD_ASSG
             ItemQuantity = quantity;
             FoodStall = foodStall;
         }
-
+        // function to update the food stall reference to null when the item is removed from the menu
         public void clearFoodStallReference()
         {
             FoodStall = null;
