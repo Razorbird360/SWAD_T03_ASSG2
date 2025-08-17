@@ -706,6 +706,7 @@ bool validateFieldValue(FoodStall stall, string field, object value, MenuItem cu
 // Respond to feedback - Rafe Chan Rui An S10266058G
 void RespondToFeedback()
 {
+    Console.WriteLine();
     FoodStall foodstall = staff.StallAffiliation;
     while (true)
     {
@@ -770,7 +771,7 @@ void RespondToFeedback()
         // If no feedback at all, exit
         if (replied.Count == 0 && pending.Count == 0)
         {
-            Console.WriteLine("The food stall currently does not have any feedback. Check again later");
+            Console.WriteLine("The food stall currently does not have any feedback. \nPlease Check again later");
             break;
         }
 
@@ -783,7 +784,9 @@ void RespondToFeedback()
             Feedback feedbackToReply = foodstall.getFeedbackByID(feedbackID);
             if (feedbackToReply == null || feedbackToReply.replied)
             {
+                Console.WriteLine();
                 Console.WriteLine("Invalid or already replied feedback ID.");
+                Console.WriteLine();
                 continue;
             }
 
@@ -801,6 +804,7 @@ void RespondToFeedback()
             {
                 while (true)
                 {
+                    Console.WriteLine();
                     Console.Write("Enter your response: ");
                     string response = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(response))
@@ -872,15 +876,18 @@ void ReportInappopriateFeedback(Feedback feedback)
 {
     while (true)
     {
+        Console.WriteLine();
         Console.WriteLine("Please enter the subject of your report");
         string? subject = Console.ReadLine();
 
+        Console.WriteLine();
         Console.WriteLine("Please enter the reason for your report");
         string? reason = Console.ReadLine();
 
         if (string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(reason))
         {
-            Console.WriteLine("Subject and reason cannot be empty. Please try again.");
+            Console.WriteLine("Subject and reason cannot be empty.");
+            Console.WriteLine("Please try again");
             Console.WriteLine();
             continue;
         }
@@ -892,7 +899,7 @@ void ReportInappopriateFeedback(Feedback feedback)
         admin.ReportFeedback(feedbackReport);
         feedback.reported = true;
         Console.WriteLine();
-        Console.WriteLine("Your report has been submitted successfully. Thank you for your feedback.");
+        Console.WriteLine("Your report has been submitted successfully. Thank you for your report.");
         break;
     }
 }
