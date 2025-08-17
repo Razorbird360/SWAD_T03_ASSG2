@@ -132,7 +132,7 @@ while (true)
 {
     Console.WriteLine("== Login Or Register ==");
     Console.WriteLine("  1. Login as Student");
-    Console.WriteLine("  2. Login as Staff");
+    Console.WriteLine("  2. Login as Food Stall Staff");
     Console.WriteLine("  3. Login as Admin");
     Console.WriteLine("  4. Register as a User");
     Console.WriteLine();
@@ -256,12 +256,12 @@ while (true)
     }
     else if (userType == "Staff")
     {
-        Console.WriteLine("Welcome Staff!");
+        Console.WriteLine("Welcome Food Stall Staff!");
         Console.WriteLine();
         Console.WriteLine("  1. Manage stall profile");
         Console.WriteLine("  2. View & track incoming orders");
         Console.WriteLine("  3. Manage Menu Items");
-        Console.WriteLine("  4. Response to feedback");
+        Console.WriteLine("  4. Respond to feedback");
         Console.WriteLine("  5. Cancel orders & manage no-shows");
         Console.WriteLine("  6. Track sales performance");
         Console.WriteLine();
