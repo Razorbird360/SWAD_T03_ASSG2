@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWAD_ASSG
 {
-    class ReportFeedback
+    class FeedbackReport
     {
         public string Subject { get; set; }
         public string Reason { get; set; }
@@ -14,7 +14,7 @@ namespace SWAD_ASSG
         public DateTime ReportedAt { get; set; }
         public Feedback feedback { get; set; }
 
-        public ReportFeedback(string subject, string reason, string reportedByUserID, Feedback feedback)
+        public FeedbackReport(string subject, string reason, string reportedByUserID, Feedback feedback)
         {
             Subject = subject;
             Reason = reason;

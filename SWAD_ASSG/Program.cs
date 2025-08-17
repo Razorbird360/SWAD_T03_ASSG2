@@ -163,10 +163,10 @@ while (true)
         Console.Write("Password: ");
         string? password = Console.ReadLine();
         userType = "Staff";
-        if(userID != "1")
+        if(userID == "2")
         {
             staff = new FoodStallStaff(
-                userID: "2",
+                userID: "2",    
                 name: "John",
                 email: "john@example.com",
                 password: "pass123",
@@ -234,7 +234,6 @@ while (true)
     Console.WriteLine();
     if (userType == "Student")
     {
-        // change the options accordingly these are fake example ones
         Console.WriteLine("Welcome Student!");
         Console.WriteLine();
         Console.WriteLine("  1. Browse food stalls & menus");
@@ -259,7 +258,6 @@ while (true)
     }
     else if (userType == "Staff")
     {
-        // change the options accordingly these are fake example ones
         Console.WriteLine("Welcome Staff!");
         Console.WriteLine();
         Console.WriteLine("  1. Manage stall profile");
@@ -281,6 +279,7 @@ while (true)
         }
         else if (option == "4")
         {
+            // Respond to feedback - Rafe Chan Rui An S10266058G
             RespondToFeedback();
         }
         else
@@ -681,23 +680,23 @@ bool validateFieldValue(string field, object value, MenuItem currentItem = null)
     return true;
 }
 
-
+// Respond to feedback - Rafe Chan Rui An S10266058G
 void RespondToFeedback()
 {
     FoodStall foodstall = staff.StallAffiliation;
     while (true)
     {
-        var (unreplied, replied, reported) = foodstall.getListOfFeedback();
+        var(pending, replied, reported) = foodstall.getListOfFeedback();
         // Unreplied Feedback Section
-        Console.WriteLine("=== Unreplied Feedback ===");
-        if (unreplied.Count == 0)
+        Console.WriteLine("=== Feedback Awaiting for Response ===");
+        if (pending.Count == 0)
         {
             Console.WriteLine("No feedback available to respond to.");
             Console.WriteLine();
         }
         else
         {
-            foreach (var f in unreplied)
+            foreach (var f in pending)
             {
                 Console.WriteLine($"ID: {f.feedbackID}");
                 Console.WriteLine($"Customer: {f.customerName}");
@@ -746,14 +745,14 @@ void RespondToFeedback()
             }
         }
         // If no feedback at all, exit
-        if (replied.Count == 0 && unreplied.Count == 0)
+        if (replied.Count == 0 && pending.Count == 0)
         {
             Console.WriteLine("The food stall currently does not have any feedback. Check again later");
             break;
         }
 
         // Only allow reply if unreplied feedback exists
-        if (unreplied.Count > 0)
+        if (pending.Count > 0)
         {
             Console.Write("Please enter the feedback ID you want to reply to: ");
             string feedbackID = Console.ReadLine();
@@ -777,29 +776,33 @@ void RespondToFeedback()
 
             if (option == "1")
             {
-                Console.Write("Enter your response: ");
-                string response = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(response))
+                while (true)
                 {
-                    Console.WriteLine("Response cannot be empty, please fill it up before sending");
+                    Console.Write("Enter your response: ");
+                    string response = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(response))
+                    {
+                        Console.WriteLine("Response cannot be empty, please fill it up before sending");
+                        Console.WriteLine();
+                        continue;
+                    }
+                    feedbackToReply.updateResponse(response);
+                    // Log the response to a file (Mimicking store to database
+                    File.AppendAllText("feedbackLogs.txt",
+                        $"Responded to Feedback ID: {feedbackToReply.feedbackID}, " +
+                        $"Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
                     Console.WriteLine();
-                    continue;
+                    Console.WriteLine("Reply sent to user successfully!");
+                    Console.WriteLine();
+                    Console.WriteLine("Here is the feedback you replied to: ");
+                    Console.WriteLine($"ID: {feedbackToReply.feedbackID}");
+                    Console.WriteLine($"Customer: {feedbackToReply.customerName}");
+                    Console.WriteLine($"Comment: {feedbackToReply.comment}");
+                    Console.WriteLine($"Reply: {feedbackToReply.response}");
+                    Console.WriteLine($"Date: {feedbackToReply.timestamp}");
+                    Console.WriteLine();
+                    break;
                 }
-                feedbackToReply.updateResponse(response);
-                // Log the response to a file (Mimicking store to database
-                File.AppendAllText("feedbackLogs.txt",
-                    $"Responded to Feedback ID: {feedbackToReply.feedbackID}, " +
-                    $"Response: {response}, Time of reply: {DateTime.Now}, Staff: {userID} \n");
-                Console.WriteLine();
-                Console.WriteLine("Reply sent to user successfully!");
-                Console.WriteLine();
-                Console.WriteLine("Here is the feedback you replied to: ");
-                Console.WriteLine($"ID: {feedbackToReply.feedbackID}");
-                Console.WriteLine($"Customer: {feedbackToReply.customerName}");
-                Console.WriteLine($"Comment: {feedbackToReply.comment}");
-                Console.WriteLine($"Reply: {feedbackToReply.response}");
-                Console.WriteLine($"Date: {feedbackToReply.timestamp}");
-                Console.WriteLine();
             }
             else if (option == "2")
             {
@@ -811,16 +814,37 @@ void RespondToFeedback()
                 continue;
             }
         }
-        Console.Write("Would you like to respond to other feedbacks? Y/N: ");
-        string continueResponse = Console.ReadLine();
-        if (continueResponse.ToUpper() == "N")
+
+        if((pending.Count -1) > 0)
         {
-            break;
+            while (true)
+            {
+                Console.Write("Would you like to respond to other feedbacks? Y/N: ");
+                string continueResponse = Console.ReadLine();
+                if (continueResponse.ToUpper() == "N")
+                {
+                    return;
+                }
+                else if (continueResponse.ToUpper() == "Y")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter Y or N");
+                }
+                Console.WriteLine();
+            }
         }
-        Console.WriteLine();
+        else
+        {
+            Console.WriteLine("You have responded to all feedbacks, returning to homepage");
+            return;
+        }
+
     }
 }
-
+// Report Inappopriate Feedback - Rafe Chan Rui An S10266058G
 void ReportInappopriateFeedback(Feedback feedback)
 {
     while (true)
@@ -841,7 +865,8 @@ void ReportInappopriateFeedback(Feedback feedback)
         File.AppendAllText("reportFeedbackLogs.txt",
             $"Report Subject: {subject}, Reason: {reason}, Time of report: {DateTime.Now}, Staff: {userID} \n");
 
-        admin.ReportFeedback(subject, reason, feedback, userID);
+        FeedbackReport feedbackReport = new FeedbackReport(subject, reason, staff.userID, feedback);
+        admin.ReportFeedback(feedbackReport);
         feedback.reported = true;
         Console.WriteLine();
         Console.WriteLine("Your report has been submitted successfully. Thank you for your feedback.");

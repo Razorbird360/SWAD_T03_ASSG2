@@ -12,7 +12,7 @@ namespace SWAD_ASSG
         public string permissionLevel { get; set; }
         public string department { get; set; }
 
-        public List<ReportFeedback> reportedFeedbacks { get; set; } = new List<ReportFeedback>();
+        public List<FeedbackReport> reportedFeedbacks { get; set; } = new List<FeedbackReport>();
 
         public Administrator(string contactDetails, string permissionLevel, string department, string userID, string name, string email, string password)
         {
@@ -25,10 +25,9 @@ namespace SWAD_ASSG
             this.department = department;
         }
 
-        public void ReportFeedback(string subject, string reason, Feedback feedback, string reportingStaffID)
+        public void ReportFeedback(FeedbackReport feedbackReport)
         {
-            ReportFeedback report = new ReportFeedback(subject, reason, reportingStaffID, feedback);
-            reportedFeedbacks.Add(report);
+            reportedFeedbacks.Add(feedbackReport);
         }
     }
 }
